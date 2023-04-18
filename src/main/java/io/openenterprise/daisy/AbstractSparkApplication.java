@@ -8,11 +8,20 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.Map;
 
-public abstract class AbstractApplication {
+/**
+ * The base of all Apache Spark application.
+ */
+public abstract class AbstractSparkApplication {
 
     @Inject
     protected SparkSession sparkSession;
 
+    /**
+     * Built the aggregated {@link Dataset} from different data sources (say a RDBMS like Postgres).
+     *
+     * @param parameters
+     * @return
+     */
     @Nonnull
     protected abstract Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters);
 }

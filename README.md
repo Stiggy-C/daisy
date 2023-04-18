@@ -35,6 +35,9 @@ This class represents the foundation of a machine learning operation running on 
 need to extends this class and fill in the necessary logic to build/train machine learning model & use the built/trained
 model to get a prediction.
 
-One can take a look at ```io.openenterprise.daisy.examples.RecentPurchaseExampleStreamingPipeline``` for an example
+One can take a look at ```io.openenterprise.daisy.examples.ml.ClusterAnalysisOnRecentPurchaseExample``` for an example
 implementation of this class.
 
+## Caveats
+Currently, Daisy is engineered to be run in Spark client mode. In another words, Daisy need to be hosted on its own, be 
+it the Docker engine/Kubernetes/physical server/VM.
