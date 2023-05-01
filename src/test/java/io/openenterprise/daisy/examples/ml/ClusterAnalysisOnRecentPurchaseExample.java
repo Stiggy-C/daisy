@@ -1,7 +1,7 @@
 package io.openenterprise.daisy.examples.ml;
 
 import io.openenterprise.daisy.examples.data.SkuCategory;
-import io.openenterprise.daisy.ml.AbstractMachineLearning;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearning;
 import lombok.SneakyThrows;
 import org.apache.spark.ml.clustering.KMeans;
 import org.apache.spark.ml.clustering.KMeansModel;
@@ -91,9 +91,8 @@ public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearn
                 .select("memberId", "age", "gender", "tier", "skuCategory");
     }
 
-    @Override
     @Nonnull
-    protected KMeansModel buildModel(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) {
+    public KMeansModel buildModel(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) {
         var kMeans = new KMeans();
         /*
             Cluster by age groups & sku categories (of most frequent purchases)
@@ -124,8 +123,9 @@ public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearn
     @Override
     @Nonnull
     @SneakyThrows
-    protected Dataset<Row> predict(@Nonnull KMeansModel model, @Nonnull String jsonString) {
-        var dataset = toDataset(jsonString);
+    public Dataset<Row> predict(@Nonnull KMeansModel model, @Nonnull String jsonString) {
+        var jsonNode = objectMapper.readTree(jsonString);
+        var dataset = jsonNodeToDatasetConverter.convert(jsonNode);
         var transformedDataset = new VectorAssembler().setInputCols(new String[]{"age", "skuCategory"})
                 .setOutputCol(model.getFeaturesCol()).transform(dataset);
 

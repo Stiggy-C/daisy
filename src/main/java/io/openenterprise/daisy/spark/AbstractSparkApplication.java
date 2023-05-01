@@ -1,4 +1,4 @@
-package io.openenterprise.daisy;
+package io.openenterprise.daisy.spark;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;

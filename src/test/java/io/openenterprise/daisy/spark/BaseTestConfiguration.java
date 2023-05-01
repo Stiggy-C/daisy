@@ -28,6 +28,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
+import java.util.concurrent.Executors;
 
 @TestConfiguration
 public class BaseTestConfiguration {
@@ -103,7 +104,6 @@ public class BaseTestConfiguration {
         } finally {
             Testcontainers.exposeHostPorts(3306);
         }
-
     }
 
     @Bean

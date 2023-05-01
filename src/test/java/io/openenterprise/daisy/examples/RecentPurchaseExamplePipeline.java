@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.examples;
 
-import io.openenterprise.daisy.AbstractPipeline;
+import io.openenterprise.daisy.spark.AbstractPipeline;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.jetbrains.annotations.NotNull;

@@ -2,11 +2,16 @@ package io.openenterprise.daisy.examples.ml;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.trivago.triava.tcache.EvictionPolicy;
+import com.trivago.triava.tcache.core.Builder;
 import io.openenterprise.daisy.examples.AbstractTest;
 import io.openenterprise.daisy.examples.BaseTestConfiguration;
 import io.openenterprise.daisy.examples.data.Gender;
 import io.openenterprise.daisy.examples.data.MemberTier;
+import io.openenterprise.daisy.spark.ml.amazonaws.AmazonS3ModelStorage;
+import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.spark.ml.Transformer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +24,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.PostConstruct;
+import javax.cache.Cache;
+import javax.cache.Caching;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -28,6 +35,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
 class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
+
+    @Autowired
+    protected AmazonS3ModelStorage amazonS3ModelStorage;
 
     @Autowired
     protected ClusterAnalysisOnRecentPurchaseExample clusterAnalysisOnRecentPurchaseExample;
@@ -43,7 +53,7 @@ class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
         assertNotNull(dataset);
         assertFalse(dataset.isEmpty());
 
-        var modelId = clusterAnalysisOnRecentPurchaseExample.buildAndStoreModel(dataset, Map.of());
+        var modelId = clusterAnalysisOnRecentPurchaseExample.buildModel(dataset, Map.of(), amazonS3ModelStorage);
 
         assertNotNull(modelId);
         assertTrue(amazonS3.listObjects(daisyS3Bucket).getObjectSummaries().stream().allMatch(
@@ -55,13 +65,13 @@ class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
                 "\"tier\": \"" + MemberTier.values()[RandomUtils.nextInt(0, MemberTier.values().length)] + "\", " +
                 "\"skuCategory\":" + RandomUtils.nextInt(0, 5) + "}";
 
-        var transformedDataset = clusterAnalysisOnRecentPurchaseExample.predict(modelId, jsonString);
+        var transformedDataset = clusterAnalysisOnRecentPurchaseExample.predict(modelId, jsonString,
+                amazonS3ModelStorage);
 
         assertNotNull(transformedDataset);
         assertNotNull(transformedDataset.col("prediction"));
         assertNotNull(transformedDataset.select("prediction"));
     }
-
 
     @TestConfiguration
     protected static class Configuration extends BaseTestConfiguration {
@@ -72,8 +82,28 @@ class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
         }
 
         @Bean
+        protected AmazonS3ModelStorage amazonS3ModelStorage() {
+            return new AmazonS3ModelStorage();
+        }
+
+        @Bean
+        protected JsonNodeToDatasetConverter jsonNodeToDatasetConverter() {
+            return new JsonNodeToDatasetConverter();
+        }
+
+        @Bean
         protected ObjectMapper objectMapper() {
             return new ObjectMapper().findAndRegisterModules().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        }
+
+        @Bean
+        protected Cache<String, Transformer> sparkModelCache() {
+            var cachingProvider = Caching.getCachingProvider();
+            var cacheManager = cachingProvider.getCacheManager();
+            var builder = new Builder<String, Transformer>()
+                    .setEvictionPolicy(EvictionPolicy.LFU);
+
+            return cacheManager.createCache("sparkModelCache", builder);
         }
 
         @PostConstruct
@@ -86,7 +116,6 @@ class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
 
             ((ConfigurableEnvironment) environment).getPropertySources()
                     .addLast(new PropertiesPropertySource(ClusterAnalysisOnRecentPurchaseExample.class.getName(), properties));
-
         }
     }
 
