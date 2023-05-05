@@ -9,6 +9,8 @@ import java.net.URI;
 
 public interface ModelStorage {
 
+    URI getUriOfModel(@Nonnull String uid);
+
     <M extends Model<M> & MLWritable> M load(@Nonnull Class<M> modelClass, @Nonnull String uid);
 
     <M extends Model<M> & MLWritable> URI store(@Nonnull M model);

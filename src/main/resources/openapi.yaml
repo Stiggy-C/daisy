@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Daisy
+  description: "A set of REST-ful APIs to control & manage Daisy's component"
+  version: 0.0.1
+paths:
+  /ml/{name}/predict:
+    post:
+      description: ""
+      summary: Get prediction from the model of the machine learning which has the given name
+      tags:
+        - ml
+      operationId: "getPrediction"
+      parameters:
+        - name: modelId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The prediction in JSON format
+          description: OK
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbnormalResponse'
+          description:  Internal Server Error
+  /ml/{name}/train:
+    post:
+      description: ""
+      summary: Build & train the model of the machine learning which has the given name
+      tags:
+        - ml
+      operationId: "trainModel"
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameters'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrainingResponse'
+          description: OK
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbnormalResponse'
+          description: Internal Server Error
+  /pipelines/{name}/trigger:
+    post:
+      description: ""
+      summary: Trigger the pipeline which has the given name
+      tags:
+        - pipelines
+      operationId: "triggerPipeline"
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameters'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerPipelineResponse'
+          description: OK
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbnormalResponse'
+          description: Internal Server Error
+components:
+  schemas:
+    AbnormalResponse:
+      type: object
+      required:
+        - throwable
+        - stackFrame
+      properties:
+        throwable:
+          type: string
+        stackFrame:
+          type: string
+    Parameters:
+      type: object
+      additionalProperties: true
+    TriggerPipelineResponse:
+      type: object
+      required:
+        - isStreaming
+      properties:
+        isStreaming:
+          type: boolean
+        streamingQueryId:
+          type: string
+          format: uuid
+    TrainingResponse:
+      type: object
+      required:
+        - modelId
+        - modelUri
+      properties:
+        modelId:
+          type: string
+        modelUri:
+          type: string

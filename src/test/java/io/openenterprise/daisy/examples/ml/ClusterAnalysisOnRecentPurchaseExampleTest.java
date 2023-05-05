@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.trivago.triava.tcache.EvictionPolicy;
 import com.trivago.triava.tcache.core.Builder;
 import io.openenterprise.daisy.examples.AbstractTest;
-import io.openenterprise.daisy.examples.BaseTestConfiguration;
+import io.openenterprise.daisy.examples.Configuration;
 import io.openenterprise.daisy.examples.data.Gender;
 import io.openenterprise.daisy.examples.data.MemberTier;
 import io.openenterprise.daisy.spark.ml.amazonaws.AmazonS3ModelStorage;
@@ -18,10 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.annotation.PostConstruct;
 import javax.cache.Cache;
@@ -34,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
-class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
+public class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
 
     @Autowired
     protected AmazonS3ModelStorage amazonS3ModelStorage;
@@ -74,7 +78,16 @@ class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
     }
 
     @TestConfiguration
-    protected static class Configuration extends BaseTestConfiguration {
+    public static class Configuration  {
+
+        @Autowired
+        protected Environment environment;
+
+        @Autowired
+        protected MySQLContainer mySQLContainer;
+
+        @Autowired
+        protected PostgreSQLContainer postgreSQLContainer;
 
         @Bean
         protected ClusterAnalysisOnRecentPurchaseExample clusterAnalysisOnRecentPurchaseExample() {

@@ -23,5 +23,5 @@ public abstract class AbstractSparkApplication {
      * @return
      */
     @Nonnull
-    protected abstract Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters);
+    public abstract Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters);
 }

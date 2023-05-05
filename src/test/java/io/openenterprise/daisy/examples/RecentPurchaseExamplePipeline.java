@@ -35,7 +35,7 @@ public class RecentPurchaseExamplePipeline extends AbstractPipeline {
 
     @NotNull
     @Override
-    protected Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters) {
+    public Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters) {
         // Get csvS3Url from given list of parameters:
         String csvS3Uri = parameters.get("csvS3Uri").toString();
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.trivago.triava.tcache.EvictionPolicy;
 import com.trivago.triava.tcache.core.Builder;
 import io.openenterprise.daisy.ApplicationConfiguration;
-import io.openenterprise.daisy.spark.BaseTestConfiguration;
+import io.openenterprise.daisy.Configuration;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,14 +19,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.cache.Cache;
 import javax.cache.Caching;
-import javax.inject.Named;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
-@Import({ApplicationConfiguration.class, PmmlBasedMachineLearningExampleTest.Configuration.class})
+@Import({ApplicationConfiguration.class, Configuration.class, PmmlBasedMachineLearningExampleTest.Configuration.class})
 @TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
 class PmmlBasedMachineLearningExampleTest {
 
@@ -48,7 +47,7 @@ class PmmlBasedMachineLearningExampleTest {
     }
 
     @TestConfiguration
-    protected static class Configuration extends BaseTestConfiguration {
+    protected static class Configuration {
 
         @Bean
         protected JsonNodeToDatasetConverter jsonNodeToDatasetConverter() {

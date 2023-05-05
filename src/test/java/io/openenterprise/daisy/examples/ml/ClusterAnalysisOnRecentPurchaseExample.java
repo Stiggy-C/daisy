@@ -37,7 +37,7 @@ public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearn
 
     @Override
     @Nonnull
-    protected Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters) {
+    public Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters) {
         // Get csvS3Url from given list of parameters:
         String csvS3Url = parameters.get("csvS3Uri").toString();
 

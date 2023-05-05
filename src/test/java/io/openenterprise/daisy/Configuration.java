@@ -1,4 +1,4 @@
-package io.openenterprise.daisy.spark;
+package io.openenterprise.daisy;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
@@ -28,10 +28,9 @@ import org.testcontainers.utility.DockerImageName;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
-import java.util.concurrent.Executors;
 
 @TestConfiguration
-public class BaseTestConfiguration {
+public class Configuration {
 
     private static final String LOCALSTACK_DOCKER_IMAGE_TAG = "localstack/localstack:1.4.0";
 

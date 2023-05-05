@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Import;
 import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Import(Configuration.class)
 public abstract class AbstractTest {
 
     protected static final String TEST_S3_BUCKET = "unit-test";

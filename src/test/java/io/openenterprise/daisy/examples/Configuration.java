@@ -8,7 +8,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @TestConfiguration
-public class BaseTestConfiguration extends io.openenterprise.daisy.spark.BaseTestConfiguration {
+public class Configuration extends io.openenterprise.daisy.Configuration {
 
     @Autowired
     protected Environment environment;

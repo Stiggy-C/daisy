@@ -6,12 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -52,8 +57,17 @@ class RecentPurchaseExampleStreamingPipelineTest extends AbstractTest {
         assertTrue(numberOfRecentPurchases > 0);
     }
 
-    @org.springframework.boot.test.context.TestConfiguration
-    protected static class ExampleTestConfiguration extends BaseTestConfiguration {
+    @TestConfiguration
+    protected static class Configuration {
+
+        @Autowired
+        protected Environment environment;
+
+        @Autowired
+        protected MySQLContainer mySQLContainer;
+
+        @Autowired
+        protected PostgreSQLContainer postgreSQLContainer;
 
         @Bean
         protected RecentPurchaseExampleStreamingPipeline recentPurchaseExampleStreamingPipeline() {

@@ -3,6 +3,7 @@ package io.openenterprise.daisy.spark.ml;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.openenterprise.daisy.spark.AbstractSparkApplication;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
+import lombok.Getter;
 import org.apache.spark.ml.Model;
 import org.apache.spark.ml.Transformer;
 import org.apache.spark.ml.util.MLWritable;
@@ -32,6 +33,7 @@ public abstract class AbstractMachineLearning<M extends Model<M> & MLWritable> e
     @Named("sparkModelCache")
     protected Cache<String, Transformer> modelCache;
 
+    @Getter
     protected Class<M> modelClass;
 
     @Inject
@@ -53,7 +55,7 @@ public abstract class AbstractMachineLearning<M extends Model<M> & MLWritable> e
      */
     @Nonnull
     public String buildModel(
-            @Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters, @Nonnull ModelStorage modelStorage) {
+            @Nonnull Dataset<Row> dataset, @Nonnull Map<String, Object> parameters, @Nonnull ModelStorage modelStorage) {
         var model = buildModel(dataset, parameters);
 
         modelCache.put(model.uid(), model);

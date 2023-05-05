@@ -30,26 +30,7 @@ public class AmazonS3ModelStorage implements ModelStorage {
     @Value("${daisy.s3.bucket}")
     protected String s3Bucket;
 
-    @Override
-    @SuppressWarnings("unchecked")
-    @SneakyThrows
-    public <M extends Model<M> & MLWritable> M load(@Nonnull Class<M> modelClass, @NotNull String uid) {
-        var s3Uri = getS3UriOfModel(uid);
 
-        return (M) MethodUtils.invokeStaticMethod(modelClass, "load", StringUtils.replace(
-                s3Uri.toString(), "s3", "s3a"));
-    }
-
-
-    @Override
-    @SneakyThrows
-    public <M extends Model<M> & MLWritable> URI store(@NotNull M model) {
-        var s3Uri = getS3UriOfModel(model.uid());
-
-        model.write().overwrite().save(StringUtils.replace(s3Uri.toString(), "s3", "s3a"));
-
-        return s3Uri;
-    }
 
     /**
      * Get the S3 URI of the model which has the given modelId.
@@ -58,12 +39,34 @@ public class AmazonS3ModelStorage implements ModelStorage {
      * @return
      */
     @Nonnull
-    protected URI getS3UriOfModel(@Nonnull String modelId) {
+    @Override
+    public URI getUriOfModel(@Nonnull String modelId) {
         var s3path = (StringUtils.startsWith(directory, "/")?
                 StringUtils.replaceOnce(directory, "/", "") : directory) + "/" + modelId;
         var s3Resource = new SimpleStorageResource(amazonS3, s3Bucket, s3path, new SyncTaskExecutor());
 
         return s3Resource.getS3Uri();
+    }
+
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
+    @Override
+    public <M extends Model<M> & MLWritable> M load(@Nonnull Class<M> modelClass, @NotNull String uid) {
+        var s3Uri = getUriOfModel(uid);
+
+        return (M) MethodUtils.invokeStaticMethod(modelClass, "load", StringUtils.replace(
+                s3Uri.toString(), "s3", "s3a"));
+    }
+
+
+    @SneakyThrows
+    @Override
+    public <M extends Model<M> & MLWritable> URI store(@NotNull M model) {
+        var s3Uri = getUriOfModel(model.uid());
+
+        model.write().overwrite().save(StringUtils.replace(s3Uri.toString(), "s3", "s3a"));
+
+        return s3Uri;
     }
 
     @PostConstruct

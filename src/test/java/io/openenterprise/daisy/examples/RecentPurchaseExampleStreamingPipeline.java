@@ -56,7 +56,7 @@ public class RecentPurchaseExampleStreamingPipeline extends AbstractStreamingPip
 
     @NotNull
     @Override
-    protected Dataset<Row> buildDataset(@NotNull Map<String, ?> parameters) {
+    public Dataset<Row> buildDataset(@NotNull Map<String, ?> parameters) {
         // Build source datasets:
         var csvDataset = sparkSession.readStream().format("csv")
                 .option("cleanSource", "archive")

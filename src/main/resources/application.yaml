@@ -1,0 +1,10 @@
+cxf:
+  jaxrs:
+    component-scan: true
+    component-scan-packages: io.openenterprise.daisy.rs
+  servlet:
+    enabled: true
+
+daisy:
+  s3:
+    bucket: daisy
