@@ -19,7 +19,7 @@ import java.util.Map;
 import static org.apache.spark.sql.functions.*;
 
 @Component("clusterAnalysisByRecentPurchaseExample")
-@Profile("example")
+@Profile("ml_example")
 public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearning<KMeansModel> {
 
     @Value("${clusterAnalysisOnRecentPurchaseExample.mySqlJdbcPassword}")

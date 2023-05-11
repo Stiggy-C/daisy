@@ -5,11 +5,12 @@ a simple data lakehouse (wanna be) which built around Apache Spark & Spring Boot
 
 ## What can Daisy offer?
 * #### Data pipeline & streaming data pipeline
-  * Backed by Apache Spark, (streaming) data pipeline(s) can be implemented with little amount of code by anyone who has
+  * (streaming) data pipeline(s) can be implemented with little amount of code by anyone who has
   Spark experience.
 * #### Machine Learning as a service
-  * Backed by Apache Spark, model can be built and prediction can be retrieved with little amount of code by anyone who 
-  has Spark experience & implemented logic can be accessed by 3rd parties via RESTful API.
+  * spark-mllib model can be built and prediction can be retrieved with little amount of code by anyone who 
+  has Spark experience.
+  * RESTful APIs to invoke model training & getting predictions on the fly.
 
 ## Design goals
 * #### Low code
@@ -17,10 +18,10 @@ a simple data lakehouse (wanna be) which built around Apache Spark & Spring Boot
 * #### Mainstream frameworks & libraries
   * Can easily be tamed by anyone who has worked with Apache Spark & Spring Boot. 
 * #### Minimalistic design
-  * Keeping it simple & stupid and does not require rocket scientists to work with Daisy
+  * Keeping it simple & stupid and does not require a rocket scientist to work with Daisy
 
 ## Core components
-In the lowest level, Daisy provide 3 core components for Spark engineers.
+In the lowest level, Daisy provide 4 core components for developers/engineers who have exposures to Apache Spark.
 
 ### AbstractPipeline
 This class represents the foundation of a data pipeline running on an Apache Spark cluster. Spark engineers just need to
@@ -31,8 +32,12 @@ extends this class and fill in the following methods to complete a streaming dat
 
 The implementation of this class is ideal to be used in a batch job.
 
-One can take a look at [RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java) 
-for an example implementation of this class.
+[RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java) is an
+example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 bucket 
+to be aggregated with the membership table in a MySQL database and write the results into a PostgreSQL database.
+
+Usage of [RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java) 
+can be seen from [RecentPurchaseExamplePipelineTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipelineTest.java)
 
 ### AbstractStreamingPipeline
 This class represents the foundation of a streaming pipeline running on an Apache Spark cluster. Spark engineers just 
@@ -43,8 +48,12 @@ need to extends this class and fill in the following methods to complete a strea
 
 The implementation of this class is ideal for continuous data integration.
 
-One can take a look at [RecentPurchaseExampleStreamingPipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipeline.java)
-for an example implementation of this class.
+[RecentPurchaseExampleStreamingPipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipeline.java)
+is an example implementation of this class. It is the streaming version of 
+[RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java)
+
+Usage of [RecentPurchaseExampleStreamingPipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipeline.java)
+can be seen from [RecentPurchaseExampleStreamingPipelineTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipelineTest.java)
 
 ### AbstractMachineLearning
 This class represents the foundation of a machine learning operation running on an Apache Spark cluster. Spark engineers
@@ -55,8 +64,13 @@ built/trained model to get a prediction,
 * M buildModel(Dataset<Row> dataset, Map<String, ?> parameters)
 * Dataset<Row> predict(M model, String jsonString)
 
-One can take a look at [ClusterAnalysisOnRecentPurchaseExample](src/main/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
-for an example implementation of this class.
+[ClusterAnalysisOnRecentPurchaseExample](src/main/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
+for an example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 
+bucket to be aggregated with the membership table in a MySQL database. Aggregated data will be massaged to be used to 
+build a ML model to get prediction.
+
+Usage of [ClusterAnalysisOnRecentPurchaseExample](src/test/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
+can be seen from [ClusterAnalysisOnRecentPurchaseExampleTest](src/test/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExampleTest.java)
 
 ### AbstractPmmlBasedMachineLearning
 **P**redictive **M**odel **M**arkup **L**anguage (PMML) is an XML-based predictive model interchange format. It allows
@@ -65,7 +79,27 @@ imported and run on Apache Spark/Daisy. This class provides method to import the
 S3. Imported PMML file will be converted to Spark model. Such model can be used by the predict method of this class.
 
 Spark engineers do not have to do anything special, he/she just need to extends 
-this class and give it an unique bean name when necessary.
+this class and give it an unique (Spring) bean name when necessary.
+
+## RESTful APIs
+### MlApiImpl
+
+[MlApiImpl](src/main/java/io/openenterprise/daisy/rs/MlApiImpl.java) provides the following endpoints:
+
+#### getPrediction
+POST (http|https)://$host:$port/services/ml/{beanName}/predict?modelId=$modelId
+
+#### trainModel
+POST (http|https)://$host:$port/services/ml/{beanName}/train
+
+### PipelineApiImpl
+
+[PipelineApiImpl](src/main/java/io/openenterprise/daisy/rs/PipelinesApiImpl.java) provides the following endpoints:
+
+#### triggerPipeline
+POST (http|https)://$host:$port/services/pipelines/{beanName}/trigger
+
+Click [here](src/main/resources/openapi.yaml) for the OpenAPI 3 definition for all the endpoints.
 
 ## Caveats
 * Currently, Daisy is engineered to be run in Spark client mode. In another words, Daisy need to be hosted on its own,

@@ -37,8 +37,14 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
+@TestPropertySource(properties = {"spring.profiles.active=local_spark,ml_example"})
 public class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
+
+    public static final String JSON_STRING = "{\"memberId\": \"" + UUID.randomUUID() + "\", " +
+            "\"age\":" + RandomUtils.nextInt(0, 99) + ",  " +
+            "\"gender\": \"" + Gender.values()[RandomUtils.nextInt(0, Gender.values().length)] + "\", " +
+            "\"tier\": \"" + MemberTier.values()[RandomUtils.nextInt(0, MemberTier.values().length)] + "\", " +
+            "\"skuCategory\":" + RandomUtils.nextInt(0, 5) + "}";
 
     @Autowired
     protected AmazonS3ModelStorage amazonS3ModelStorage;
@@ -63,13 +69,7 @@ public class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
         assertTrue(amazonS3.listObjects(daisyS3Bucket).getObjectSummaries().stream().allMatch(
                 s3ObjectSummary -> s3ObjectSummary.getKey().contains("ml/models/" + modelId)));
 
-        var jsonString = "{\"memberId\": \"" + UUID.randomUUID() + "\", " +
-                "\"age\":" + RandomUtils.nextInt(0, 99) + ",  " +
-                "\"gender\": \"" + Gender.values()[RandomUtils.nextInt(0, Gender.values().length)] + "\", " +
-                "\"tier\": \"" + MemberTier.values()[RandomUtils.nextInt(0, MemberTier.values().length)] + "\", " +
-                "\"skuCategory\":" + RandomUtils.nextInt(0, 5) + "}";
-
-        var transformedDataset = clusterAnalysisOnRecentPurchaseExample.predict(modelId, jsonString,
+        var transformedDataset = clusterAnalysisOnRecentPurchaseExample.predict(modelId, JSON_STRING,
                 amazonS3ModelStorage);
 
         assertNotNull(transformedDataset);
@@ -131,5 +131,4 @@ public class ClusterAnalysisOnRecentPurchaseExampleTest extends AbstractTest {
                     .addLast(new PropertiesPropertySource(ClusterAnalysisOnRecentPurchaseExample.class.getName(), properties));
         }
     }
-
 }

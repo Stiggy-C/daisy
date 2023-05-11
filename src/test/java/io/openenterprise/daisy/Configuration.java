@@ -144,7 +144,7 @@ public class Configuration {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    @Profile("!local-spark")
+    @Profile("!local_spark")
     @Qualifier("sparkMasterContainer")
     protected GenericContainer<?> sparkMasterContainer(@Nonnull Network network) {
         var dockerImageName = DockerImageName.parse(SPARK_DOCKER_IMAGE_TAG);
@@ -165,6 +165,7 @@ public class Configuration {
 
     @Bean
     @Order
+    @Profile("local_spark")
     protected SparkSession sparkSessionLocal(LocalStackContainer localStackContainer) {
         return SparkSession.builder()
                 .appName("daisy-unit-test")
@@ -181,7 +182,7 @@ public class Configuration {
 
     @Bean
     @Order
-    @Profile("!local-spark")
+    @Profile("!local_spark")
     protected SparkSession sparkSessionRemote(LocalStackContainer localStackContainer) {
         return SparkSession.builder()
                 .appName("daisy-unit-test")
@@ -203,7 +204,7 @@ public class Configuration {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    @Profile("!local-spark")
+    @Profile("!local_spark")
     @Qualifier("sparkWorkerContainer")
     protected GenericContainer<?> sparkWorkerContainer(
             @Nonnull Network network, @Qualifier("sparkMasterContainer") GenericContainer<?> sparkMasterContainer) {

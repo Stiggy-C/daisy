@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 @Component("recentPurchaseExamplePipeline")
-@Profile("example")
+@Profile("pipeline_example")
 public class RecentPurchaseExamplePipeline extends AbstractPipeline {
 
     @Value("${recentPurchaseExamplePipeline.mySqlJdbcPassword}")

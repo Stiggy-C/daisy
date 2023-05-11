@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @Import({ApplicationConfiguration.class, Configuration.class, PmmlBasedMachineLearningExampleTest.Configuration.class})
-@TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
-class PmmlBasedMachineLearningExampleTest {
+@TestPropertySource(properties = {"spring.profiles.active=local_spark,ml_example"})
+public class PmmlBasedMachineLearningExampleTest {
 
     @Autowired
     protected PmmlBasedMachineLearningExample pmmlBasedMachineLearningExample;
@@ -47,7 +47,7 @@ class PmmlBasedMachineLearningExampleTest {
     }
 
     @TestConfiguration
-    protected static class Configuration {
+    public static class Configuration {
 
         @Bean
         protected JsonNodeToDatasetConverter jsonNodeToDatasetConverter() {

@@ -55,5 +55,4 @@ public abstract class AbstractTest {
         // Generate the member table:
         memberDataGenerator.generate(memberIds);
     }
-
 }

@@ -27,6 +27,10 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<version>${mysql-connectorj.version}</version>
@@ -38,7 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.awspring.cloud</groupId>
-			<artifactId>spring-cloud-starter-aws</artifactId>
+			<artifactId>spring-cloud-aws-core</artifactId>
 			<version>${spring-cloud-aws.version}</version>
 			<exclusions>
 				<exclusion>

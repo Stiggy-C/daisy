@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
+@TestPropertySource(properties = {"spring.profiles.active=local_spark,pipeline_example"})
 class RecentPurchaseExampleStreamingPipelineTest extends AbstractTest {
 
     @Autowired

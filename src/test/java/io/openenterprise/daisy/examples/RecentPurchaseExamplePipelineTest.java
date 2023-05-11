@@ -23,7 +23,7 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(properties = {"spring.profiles.active=example,local-spark"})
+@TestPropertySource(properties = {"spring.profiles.active=local_spark,pipeline_example"})
 class RecentPurchaseExamplePipelineTest extends AbstractTest {
 
     @Autowired

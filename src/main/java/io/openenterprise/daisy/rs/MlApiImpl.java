@@ -36,7 +36,6 @@ public class MlApiImpl implements MlApi {
     public TrainingResponse trainModel(@Nonnull Map<String, Object> parameters, @Nonnull String name) {
         var machineLearning = applicationContext.getBean(name, AbstractMachineLearning.class);
         var dataset = machineLearning.buildDataset(parameters);
-
         var modelId = machineLearning.buildModel(dataset, parameters, modelStorage);
         var modelUri = modelStorage.getUriOfModel(modelId);
 

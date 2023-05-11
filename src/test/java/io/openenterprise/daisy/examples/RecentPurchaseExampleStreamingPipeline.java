@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
  *
  */
 @Component("recentPurchaseExampleStreamingPipeline")
-@Profile("example")
+@Profile("pipeline_example")
 public class RecentPurchaseExampleStreamingPipeline extends AbstractStreamingPipeline {
 
     /*

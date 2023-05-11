@@ -3,21 +3,14 @@ package io.openenterprise.daisy.examples;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @TestConfiguration
-public class Configuration extends io.openenterprise.daisy.Configuration {
-
-    @Autowired
-    protected Environment environment;
-
-    @Autowired
-    protected MySQLContainer mySQLContainer;
-
-    @Autowired
-    protected PostgreSQLContainer postgreSQLContainer;
+@Import(io.openenterprise.daisy.Configuration.class)
+public class Configuration {
 
     @Bean
     protected MemberDataGenerator memberDataGenerator() {
@@ -28,5 +21,4 @@ public class Configuration extends io.openenterprise.daisy.Configuration {
     protected TransactionsCsvGenerator transactionsCsvGenerator() {
         return new TransactionsCsvGenerator();
     }
-
 }
