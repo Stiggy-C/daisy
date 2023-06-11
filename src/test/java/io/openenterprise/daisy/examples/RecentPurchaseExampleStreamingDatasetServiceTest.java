@@ -1,5 +1,7 @@
 package io.openenterprise.daisy.examples;
 
+import io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference;
+import org.apache.spark.sql.AnalysisException;
 import org.apache.spark.sql.streaming.StreamingQuery;
 import org.apache.spark.sql.streaming.StreamingQueryException;
 import org.junit.jupiter.api.Test;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertiesPropertySource;
@@ -20,6 +21,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
@@ -28,18 +30,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"spring.profiles.active=local_spark,pipeline_example"})
-class RecentPurchaseExampleStreamingPipelineTest extends AbstractTest {
+class RecentPurchaseExampleStreamingDatasetServiceTest extends AbstractTest {
 
     @Autowired
     @Qualifier("postgresDatasource")
     protected DataSource dataSource;
 
     @Autowired
-    protected RecentPurchaseExampleStreamingPipeline recentPurchaseExampleStreamingPipeline;
+    protected RecentPurchaseExampleStreamingDatasetService recentPurchaseExampleStreamingPipeline;
 
     @Test
-    public void test() throws TimeoutException, StreamingQueryException {
-        var dataset = recentPurchaseExampleStreamingPipeline.buildDataset(Map.of());
+    public void test() throws TimeoutException, AnalysisException, StreamingQueryException {
+        var dataset = recentPurchaseExampleStreamingPipeline.buildDataset(Map.of(),
+                CreateTableOrViewPreference.CREATE_OR_REPLACE_GLOBAL_VIEW);
 
         assertNotNull(dataset);
         assertTrue(dataset.isStreaming());
@@ -55,6 +58,14 @@ class RecentPurchaseExampleStreamingPipelineTest extends AbstractTest {
 
         assertNotNull(numberOfRecentPurchases);
         assertTrue(numberOfRecentPurchases > 0);
+
+        assertNotNull(sparkSession.table(recentPurchaseExampleStreamingPipeline.getClass().getSimpleName()));
+
+    }
+
+    @PostConstruct
+    protected void postConstruct() throws IOException {
+        generateExampleTransactions();
     }
 
     @TestConfiguration
@@ -70,8 +81,8 @@ class RecentPurchaseExampleStreamingPipelineTest extends AbstractTest {
         protected PostgreSQLContainer postgreSQLContainer;
 
         @Bean
-        protected RecentPurchaseExampleStreamingPipeline recentPurchaseExampleStreamingPipeline() {
-            return new RecentPurchaseExampleStreamingPipeline();
+        protected RecentPurchaseExampleStreamingDatasetService recentPurchaseExampleStreamingPipeline() {
+            return new RecentPurchaseExampleStreamingDatasetService();
         }
 
         @PostConstruct
@@ -91,7 +102,7 @@ class RecentPurchaseExampleStreamingPipelineTest extends AbstractTest {
                     "s3a://" + TEST_S3_BUCKET + "/checkpoints/recentPurchaseExampleStreamingPipeline");
 
             ((ConfigurableEnvironment) environment).getPropertySources()
-                    .addLast(new PropertiesPropertySource(RecentPurchaseExamplePipeline.class.getName(), properties));
+                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleDatasetService.class.getName(), properties));
         }
     }
 }

@@ -175,6 +175,8 @@ public class Configuration {
                 .config("spark.hadoop.fs.s3a.connection.ssl.enabled", false)
                 .config("spark.hadoop.fs.s3a.endpoint", "127.0.0.1:4566")
                 .config("spark.hadoop.fs.s3a.path.style.access", true)
+                .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+                .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
                 .config("spark.sql.streaming.schemaInference", "true")
                 .config("spark.submit.deployMode", "client")
                 .getOrCreate();
@@ -197,6 +199,8 @@ public class Configuration {
                 .config("spark.hadoop.fs.s3a.path.style.access", true)
                 .config("spark.memory.offHeap.enabled", "true")
                 .config("spark.memory.offHeap.size", "512m")
+                .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+                .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
                 .config("spark.sql.streaming.schemaInference", "true")
                 .config("spark.submit.deployMode", "client")
                 .getOrCreate();

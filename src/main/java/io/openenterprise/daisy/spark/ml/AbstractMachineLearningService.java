@@ -1,7 +1,8 @@
 package io.openenterprise.daisy.spark.ml;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.openenterprise.daisy.spark.AbstractSparkApplication;
+import io.openenterprise.daisy.spark.sql.AbstractSparkSqlService;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import lombok.Getter;
 import org.apache.spark.ml.Model;
@@ -14,7 +15,6 @@ import javax.annotation.Nonnull;
 import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * @param <M>
  */
-public abstract class AbstractMachineLearning<M extends Model<M> & MLWritable> extends AbstractSparkApplication
+public abstract class AbstractMachineLearningService<M extends Model<M> & MLWritable> extends AbstractSparkSqlService
         implements MachineLearning<M> {
 
     @Inject
@@ -39,7 +39,7 @@ public abstract class AbstractMachineLearning<M extends Model<M> & MLWritable> e
     @Inject
     protected ObjectMapper objectMapper;
 
-    protected AbstractMachineLearning(@Nonnull Class<M> modelClass) {
+    protected AbstractMachineLearningService(@Nonnull Class<M> modelClass) {
         this.modelClass = modelClass;
     }
 
@@ -78,13 +78,16 @@ public abstract class AbstractMachineLearning<M extends Model<M> & MLWritable> e
      * @throws NoSuchMethodException
      * @throws IllegalAccessException
      */
+
     @SuppressWarnings("unchecked")
     @Nonnull
-    public Dataset<Row> predict(@Nonnull String modelId, @Nonnull String jsonString, @Nonnull ModelStorage modelStorage) {
+    public Dataset<Row> predict(@Nonnull String modelId, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters,
+                                @Nonnull ModelStorage modelStorage)
+            throws JsonProcessingException {
         var model = modelCache.containsKey(modelId)? (M) modelCache.get(modelId)
                 : modelStorage.load(modelClass, modelId);
 
-        return predict(model, jsonString);
+        return predict(model, jsonString, parameters);
     }
 
     /**
@@ -96,4 +99,11 @@ public abstract class AbstractMachineLearning<M extends Model<M> & MLWritable> e
      */
     @Nonnull
     protected abstract M buildModel(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters);
+
+    @Nonnull
+    protected Dataset<Row> convertJsonStringToDataset(@Nonnull String jsonString) throws JsonProcessingException {
+        var jsonNode = objectMapper.readTree(jsonString);
+
+        return jsonNodeToDatasetConverter.convert(jsonNode);
+    }
 }

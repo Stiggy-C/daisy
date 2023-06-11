@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
+@Deprecated
 public class ForeachJdbcWriter extends ForeachWriter<Row> implements ForeachFunction<Row> {
 
     private static final Map<Integer, DataSource> DATA_SOURCES = new HashMap<>();

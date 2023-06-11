@@ -2,6 +2,7 @@ package io.openenterprise.daisy.examples;
 
 import com.amazonaws.services.s3.AmazonS3;
 import org.apache.commons.io.FileUtils;
+import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
@@ -25,13 +26,15 @@ public abstract class AbstractTest {
     protected MemberDataGenerator memberDataGenerator;
 
     @Value("${daisy.example.transactions-csv.size:100}")
-    private int numberOfTransactions;
+    protected int numberOfTransactions;
+
+    @Autowired
+    protected SparkSession sparkSession;
 
     @Autowired
     protected TransactionsCsvGenerator transactionsCsvGenerator;
 
-    @PostConstruct
-    protected void postConstruct() throws IOException {
+    protected void generateExampleTransactions() throws IOException {
         var numberOfMembers = Double.valueOf(Math.floor((double) numberOfTransactions/5));
         var memberIds = new ArrayList<String>(numberOfMembers.intValue());
 

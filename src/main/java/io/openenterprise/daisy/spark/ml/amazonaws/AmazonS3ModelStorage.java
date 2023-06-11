@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import io.awspring.cloud.core.io.s3.SimpleStorageResource;
 import io.openenterprise.daisy.spark.ml.ModelStorage;
 import lombok.SneakyThrows;
-import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.ml.Model;
 import org.apache.spark.ml.util.MLWritable;

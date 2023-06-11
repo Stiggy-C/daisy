@@ -1,9 +1,9 @@
-package io.openenterprise.daisy.rs;
+package io.openenterprise.daisy.spark.sql.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import io.openenterprise.daisy.examples.ml.ClusterAnalysisOnRecentPurchaseExampleTest;
-import io.openenterprise.daisy.examples.ml.PmmlBasedMachineLearningExampleTest;
+import io.openenterprise.daisy.examples.ml.RecentPurchaseExampleClusterAnalysisTest;
+import io.openenterprise.daisy.examples.ml.PmmlBasedMachineLearningExampleServiceTest;
 import io.openenterprise.daisy.rs.model.TrainingResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoConfiguration
-@Import({ClusterAnalysisOnRecentPurchaseExampleTest.Configuration.class,
-        PmmlBasedMachineLearningExampleTest.Configuration.class, AbstractApiTest.Configuration.class,
+@Import({RecentPurchaseExampleClusterAnalysisTest.Configuration.class,
+        PmmlBasedMachineLearningExampleServiceTest.Configuration.class, AbstractApiTest.Configuration.class,
         MlApiImplTest.Configuration.class})
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true", "spring.profiles.active=local_spark,ml_example"})
 class MlApiImplTest extends AbstractApiTest {
@@ -32,7 +32,7 @@ class MlApiImplTest extends AbstractApiTest {
 
         var requestBody0 = Map.of("csvS3Uri",
                 "s3a://" + TEST_S3_BUCKET + "/csv_files/transactions.csv");
-        var urlString = "http://localhost:" + port + CONTEXT_PATH + "/ml/clusterAnalysisByRecentPurchaseExample/train";
+        var urlString = "http://localhost:" + port + CONTEXT_PATH + "/ml/recentPurchaseExampleClusterAnalysis/train";
 
         var responseEntity = testRestTemplate.exchange(urlString, HttpMethod.POST,
                 new HttpEntity<>(requestBody0, header), TrainingResponse.class);
@@ -46,9 +46,9 @@ class MlApiImplTest extends AbstractApiTest {
 
         var modelId = responseEntity.getBody().getModelId();
 
-        var requestBody1 = ClusterAnalysisOnRecentPurchaseExampleTest.JSON_STRING;
+        var requestBody1 = RecentPurchaseExampleClusterAnalysisTest.JSON_STRING;
         urlString = "http://localhost:" + port + CONTEXT_PATH +
-                "/ml/clusterAnalysisByRecentPurchaseExample/predict?modelId=" + modelId;
+                "/ml/recentPurchaseExampleClusterAnalysis/predict?modelId=" + modelId;
 
         var responseEntity1 = testRestTemplate.exchange(urlString, HttpMethod.POST,
                 new HttpEntity<>(requestBody1, header), String.class);

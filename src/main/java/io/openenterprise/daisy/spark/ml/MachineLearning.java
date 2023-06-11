@@ -1,10 +1,12 @@
 package io.openenterprise.daisy.spark.ml;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.spark.ml.Transformer;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
 public interface MachineLearning<T extends Transformer> {
 
@@ -18,6 +20,7 @@ public interface MachineLearning<T extends Transformer> {
      * @return
      */
     @Nonnull
-    Dataset<Row> predict(@Nonnull T model, @Nonnull String jsonString);
+    Dataset<Row> predict(@Nonnull T model, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters)
+            throws JsonProcessingException;
 
 }

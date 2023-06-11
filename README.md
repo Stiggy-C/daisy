@@ -1,7 +1,13 @@
 # Daisy
 ## What is Daisy?
 Daisy stands for **D**ata **A**ggregation & **I**ntellectualizing **Sy**stem. It is
-a simple data lakehouse (wanna be) which built around Apache Spark & Spring Boot.
+a simple (low code) data lake-house (wanna be) which built around Apache Spark & Spring Boot.
+
+## Updates
+### 2023-06-11
+* Ability to create (both internal & external) table & (both global & local) view within Apache Spark with 
+io.openenterprise.daisy.spark.sql.AbstractSparkSqlService.buildDataset(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference).
+* DeltaLake integration.
 
 ## What can Daisy offer?
 * #### Data pipeline & streaming data pipeline
@@ -23,39 +29,41 @@ a simple data lakehouse (wanna be) which built around Apache Spark & Spring Boot
 ## Core components
 In the lowest level, Daisy provide 4 core components for developers/engineers who have exposures to Apache Spark.
 
-### AbstractPipeline
-This class represents the foundation of a data pipeline running on an Apache Spark cluster. Spark engineers just need to
-extends this class and fill in the following methods to complete a streaming data pipeline, 
+### AbstractDatasetService
+This class represent building an aggregated dataset on an Apache Spark cluster. Furthermore, it provides logic to run as
+pipeline providing that writeDataset is implemented. Spark engineers just need to extends this class and fill in the 
+following methods, 
 
 * Dataset<Row> buildDataset(Map<String, ?> parameters)
-* void writeDataset(Dataset<Row> dataset, Map<String, ?> parameters)
+* void writeDataset(Dataset<Row> dataset, Map<String, ?> parameters) [if want to form a pipeline]
 
-The implementation of this class is ideal to be used in a batch job.
+The implementation of this class is ideal to be used to form a pipeline in a batch job.
 
-[RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java) is an
-example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 bucket 
-to be aggregated with the membership table in a MySQL database and write the results into a PostgreSQL database.
+[RecentPurchaseExampleDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java)
+is an example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 
+bucket to be aggregated with the membership table in a MySQL database and write the results into a PostgreSQL database.
 
-Usage of [RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java) 
-can be seen from [RecentPurchaseExamplePipelineTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipelineTest.java)
+Usage of [RecentPurchaseExampleDatasetService.java](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java) 
+can be seen from [RecentPurchaseExampleDatasetServiceTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetServiceTest.java)
 
-### AbstractStreamingPipeline
-This class represents the foundation of a streaming pipeline running on an Apache Spark cluster. Spark engineers just 
-need to extends this class and fill in the following methods to complete a streaming data pipeline,
+### AbstractStreamingDatasetService
+This class represent building an aggregated streaming dataset on an Apache Spark cluster. Furthermore, it provides logic
+to run as a streaming pipeline providing that writeDataset is implemented. Spark engineers just need to extends this class and fill in the
+following methods,
 
 * Dataset<Row> buildDataset(Map<String, ?> parameters)
-* void writeDataset(Dataset<Row> dataset, Map<String, ?> parameters)
+* void writeDataset(Dataset<Row> dataset, Map<String, ?> parameters) [if want to form a streaming pipeline]
 
 The implementation of this class is ideal for continuous data integration.
 
-[RecentPurchaseExampleStreamingPipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipeline.java)
+[RecentPurchaseExampleStreamingDatasetService.java](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetService.java)
 is an example implementation of this class. It is the streaming version of 
-[RecentPurchaseExamplePipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExamplePipeline.java)
+[RecentPurchaseExampleDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java)
 
-Usage of [RecentPurchaseExampleStreamingPipeline](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipeline.java)
-can be seen from [RecentPurchaseExampleStreamingPipelineTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingPipelineTest.java)
+Usage of [RecentPurchaseExampleStreamingDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetService.java)
+can be seen from [RecentPurchaseExampleStreamingDatasetServiceTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetServiceTest.java)
 
-### AbstractMachineLearning
+### AbstractMachineLearningService
 This class represents the foundation of a machine learning operation running on an Apache Spark cluster. Spark engineers
 just need to extends this class and fill in the following methods to build/train machine learning model & use the 
 built/trained model to get a prediction,
@@ -84,7 +92,7 @@ this class and give it an unique (Spring) bean name when necessary.
 ## RESTful APIs
 ### MlApiImpl
 
-[MlApiImpl](src/main/java/io/openenterprise/daisy/rs/MlApiImpl.java) provides the following endpoints:
+[MlApiImpl](src/main/java/io/openenterprise/daisy/spark/sql/rs/MlApiImpl.java) provides the following endpoints:
 
 #### getPrediction
 POST (http|https)://$host:$port/services/ml/{beanName}/predict?modelId=$modelId
@@ -94,7 +102,7 @@ POST (http|https)://$host:$port/services/ml/{beanName}/train
 
 ### PipelineApiImpl
 
-[PipelineApiImpl](src/main/java/io/openenterprise/daisy/rs/PipelinesApiImpl.java) provides the following endpoints:
+[PipelineApiImpl](src/main/java/io/openenterprise/daisy/spark/sql/rs/PipelinesApiImpl.java) provides the following endpoints:
 
 #### triggerPipeline
 POST (http|https)://$host:$port/services/pipelines/{beanName}/trigger

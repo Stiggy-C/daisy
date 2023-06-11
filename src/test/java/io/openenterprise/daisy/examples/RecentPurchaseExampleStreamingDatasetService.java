@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.examples;
 
-import io.openenterprise.daisy.spark.AbstractStreamingPipeline;
+import io.openenterprise.daisy.spark.sql.AbstractStreamingDatasetService;
 import io.openenterprise.daisy.spark.api.java.function.ForeachJdbcWriter;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Component("recentPurchaseExampleStreamingPipeline")
 @Profile("pipeline_example")
-public class RecentPurchaseExampleStreamingPipeline extends AbstractStreamingPipeline {
+public class RecentPurchaseExampleStreamingDatasetService extends AbstractStreamingDatasetService {
 
     /*
      * Can not be a children (sub-path) of csvFolderS3Uri!!

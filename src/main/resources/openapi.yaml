@@ -4,9 +4,51 @@ info:
   description: "A set of REST-ful APIs to control & manage Daisy's component"
   version: 0.0.1
 paths:
+  /datasets/{name}:
+    post:
+      description: Build the dataset and create a temporary view to be used by others if necessary
+      summary: Build the dataset and create a temporary view to be used by others if necessary
+      tags:
+        - dataset
+      operationId: "buildDataset"
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: createTempView
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: createTempViewPreference
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/CreateTempViewPreference'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameters'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildDatasetResponse'
+          description: Created
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbnormalResponse'
+          description: Internal Server Error
   /ml/{name}/predict:
     post:
-      description: ""
+      description: Get prediction from the model of the machine learning which has the given name
       summary: Get prediction from the model of the machine learning which has the given name
       tags:
         - ml
@@ -76,7 +118,7 @@ paths:
           description: Internal Server Error
   /pipelines/{name}/trigger:
     post:
-      description: ""
+      description: Trigger the pipeline which has the given name
       summary: Trigger the pipeline which has the given name
       tags:
         - pipelines
@@ -118,6 +160,25 @@ components:
           type: string
         stackFrame:
           type: string
+    BuildDatasetResponse:
+      type: object
+      required:
+        - createdView
+      properties:
+        createdView:
+          type: boolean
+        viewType:
+          type: string
+          enum:
+            - GLOBAL
+            - LOCAL
+    CreateTempViewPreference:
+      type: string
+      enum:
+        - CREATE_GLOBAL
+        - CREATE_LOCAL
+        - CREATE_OR_REPLACE_GLOBAL
+        - CREATE_OR_REPLACE_LOCAL
     Parameters:
       type: object
       additionalProperties: true

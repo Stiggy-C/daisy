@@ -1,9 +1,12 @@
 package io.openenterprise.daisy.rs;
 
+import io.openenterprise.daisy.rs.PipelinesApi;
 import io.openenterprise.daisy.rs.model.TriggerPipelineResponse;
-import io.openenterprise.daisy.spark.AbstractPipeline;
-import io.openenterprise.daisy.spark.AbstractStreamingPipeline;
+import io.openenterprise.daisy.spark.sql.AbstractDatasetService;
+import io.openenterprise.daisy.spark.sql.AbstractStreamingDatasetService;
 import lombok.SneakyThrows;
+import org.apache.spark.sql.AnalysisException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -23,13 +26,17 @@ public class PipelinesApiImpl implements PipelinesApi {
     @SneakyThrows
     @Override
     public TriggerPipelineResponse triggerPipeline(@Nonnull Map<String, Object> parameters, @Nonnull String name) {
+        if (!applicationContext.containsBean(name)) {
+            throw new NoSuchBeanDefinitionException(name);
+        }
+
         var bean = applicationContext.getBean(name);
         TriggerPipelineResponse triggerPipelineResponse;
 
-        if (isAssignable(bean.getClass(), AbstractPipeline.class) || isAssignable(bean.getClass(), AbstractStreamingPipeline.class)) {
-            triggerPipelineResponse = isAssignable(bean.getClass(), AbstractPipeline.class) ?
-                    runPipeline((AbstractPipeline) bean, parameters) :
-                    startStreamingPipeline((AbstractStreamingPipeline) bean, parameters);
+        if (isAssignable(bean.getClass(), AbstractDatasetService.class) || isAssignable(bean.getClass(), AbstractStreamingDatasetService.class)) {
+            triggerPipelineResponse = isAssignable(bean.getClass(), AbstractDatasetService.class) ?
+                    runPipeline((AbstractDatasetService) bean, parameters) :
+                    startStreamingPipeline((AbstractStreamingDatasetService) bean, parameters);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -39,16 +46,17 @@ public class PipelinesApiImpl implements PipelinesApi {
 
     @Nonnull
     protected TriggerPipelineResponse runPipeline(
-            @Nonnull AbstractPipeline pipeline, @Nonnull Map<String, Object> parameters) {
-        pipeline.run(parameters);
+            @Nonnull AbstractDatasetService datasetService, @Nonnull Map<String, Object> parameters) throws AnalysisException {
+        datasetService.pipeline(parameters);
 
         return new TriggerPipelineResponse().isStreaming(false);
     }
 
     @Nonnull
     protected TriggerPipelineResponse startStreamingPipeline(
-            @Nonnull AbstractStreamingPipeline streamingPipeline, @Nonnull Map<String, Object> parameters) throws TimeoutException {
-        var streamingQuery = streamingPipeline.start(parameters);
+            @Nonnull AbstractStreamingDatasetService streamingDatasetService, @Nonnull Map<String, Object> parameters)
+            throws TimeoutException, AnalysisException {
+        var streamingQuery = streamingDatasetService.streamingPipeline(parameters);
 
         return new TriggerPipelineResponse().isStreaming(true).streamingQueryId(streamingQuery.id());
     }

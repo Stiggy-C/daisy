@@ -20,17 +20,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.cache.Cache;
 import javax.cache.Caching;
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
-@Import({ApplicationConfiguration.class, Configuration.class, PmmlBasedMachineLearningExampleTest.Configuration.class})
+@Import({ApplicationConfiguration.class, Configuration.class, PmmlBasedMachineLearningExampleServiceTest.Configuration.class})
 @TestPropertySource(properties = {"spring.profiles.active=local_spark,ml_example"})
-public class PmmlBasedMachineLearningExampleTest {
+public class PmmlBasedMachineLearningExampleServiceTest {
 
     @Autowired
-    protected PmmlBasedMachineLearningExample pmmlBasedMachineLearningExample;
+    protected PmmlMachineLearningExampleService pmmlBasedMachineLearningExample;
 
     @Test
     public void test() throws IOException {
@@ -40,7 +41,8 @@ public class PmmlBasedMachineLearningExampleTest {
         assertNotNull(modelId);
 
         var dataset = pmmlBasedMachineLearningExample.predict(modelId,
-                "{\"sepal_length\": 5.1, \"sepal_width\": 3.5, \"petal_length\": 1.4, \"petal_width\": 0.2, \"class\": \"Iris-setosa\"}");
+                "{\"sepal_length\": 5.1, \"sepal_width\": 3.5, \"petal_length\": 1.4, \"petal_width\": 0.2, \"class\": \"Iris-setosa\"}",
+                Collections.emptyMap());
 
         assertNotNull(dataset);
         assertFalse(dataset.isEmpty());
@@ -60,8 +62,8 @@ public class PmmlBasedMachineLearningExampleTest {
         }
 
         @Bean
-        protected PmmlBasedMachineLearningExample pmmlBasedMachineLearningExample() {
-            return new PmmlBasedMachineLearningExample();
+        protected PmmlMachineLearningExampleService pmmlBasedMachineLearningExample() {
+            return new PmmlMachineLearningExampleService();
         }
 
         @Bean

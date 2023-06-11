@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.examples;
 
-import io.openenterprise.daisy.spark.AbstractPipeline;
+import io.openenterprise.daisy.spark.sql.AbstractDatasetService;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Component("recentPurchaseExamplePipeline")
 @Profile("pipeline_example")
-public class RecentPurchaseExamplePipeline extends AbstractPipeline {
+public class RecentPurchaseExampleDatasetService extends AbstractDatasetService {
 
     @Value("${recentPurchaseExamplePipeline.mySqlJdbcPassword}")
     private String mySqlJdbcPassword;

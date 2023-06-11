@@ -24,6 +24,7 @@ public class JsonNodeToDatasetConverter implements Converter<JsonNode, Dataset<R
     @Autowired
     private SparkSession sparkSession;
 
+    @Nonnull
     @Override
     public Dataset<Row> convert(@Nonnull JsonNode source) {
         return toDataset(source);

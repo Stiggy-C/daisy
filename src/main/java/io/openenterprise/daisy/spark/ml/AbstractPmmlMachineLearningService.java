@@ -12,9 +12,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.HttpException;
-import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
@@ -29,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -36,7 +34,7 @@ import java.util.NoSuchElementException;
  * standard. Implementation of this class can import PMML based models exported by other big data libraries like
  * <a href="https://github.com/jpmml/sklearn2pmml">Scikit-Learn</a> for prediction.
  */
-public abstract class AbstractPmmlBasedMachineLearning implements MachineLearning<ScoreModel> {
+public abstract class AbstractPmmlMachineLearningService implements MachineLearning<ScoreModel> {
 
     @Inject
     protected AmazonS3 amazonS3;
@@ -85,20 +83,20 @@ public abstract class AbstractPmmlBasedMachineLearning implements MachineLearnin
      * @Throws JsonProcessingException if given jsonString can not be converted to {@link Dataset}
      */
     @Nonnull
-    public Dataset<Row> predict(@Nonnull String modelId, @Nonnull String jsonString) {
+    public Dataset<Row> predict(@Nonnull String modelId, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters) {
         if (!pmmlModelCache.containsKey(modelId)) {
             throw new NoSuchElementException();
         }
 
         var scoreModel = pmmlModelCache.get(modelId);
 
-        return predict(scoreModel, jsonString);
+        return predict(scoreModel, jsonString, parameters);
     }
 
     @SneakyThrows
     @Nonnull
     @Override
-    public Dataset<Row> predict(@Nonnull ScoreModel model, @Nonnull String jsonString) {
+    public Dataset<Row> predict(@Nonnull ScoreModel model, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters) {
         var jsonNode = objectMapper.readTree(jsonString);
         var dataset = jsonNodeToDatasetConverter.convert(jsonNode);
 

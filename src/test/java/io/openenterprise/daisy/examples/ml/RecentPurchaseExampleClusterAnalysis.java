@@ -1,7 +1,8 @@
 package io.openenterprise.daisy.examples.ml;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.openenterprise.daisy.examples.data.SkuCategory;
-import io.openenterprise.daisy.spark.ml.AbstractMachineLearning;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearningService;
 import lombok.SneakyThrows;
 import org.apache.spark.ml.clustering.KMeans;
 import org.apache.spark.ml.clustering.KMeansModel;
@@ -18,9 +19,9 @@ import java.util.Map;
 
 import static org.apache.spark.sql.functions.*;
 
-@Component("clusterAnalysisByRecentPurchaseExample")
+@Component
 @Profile("ml_example")
-public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearning<KMeansModel> {
+public class RecentPurchaseExampleClusterAnalysis extends AbstractMachineLearningService<KMeansModel> {
 
     @Value("${clusterAnalysisOnRecentPurchaseExample.mySqlJdbcPassword}")
     private String mySqlJdbcPassword;
@@ -31,9 +32,50 @@ public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearn
     @Value("${clusterAnalysisOnRecentPurchaseExample.mySqlJdbcUser}")
     private String mySqlJdbcUser;
 
-    public ClusterAnalysisOnRecentPurchaseExample() {
+    public RecentPurchaseExampleClusterAnalysis() {
         super(KMeansModel.class);
     }
+
+    @Nonnull
+    public KMeansModel buildModel(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) {
+        var kMeans = new KMeans();
+        /*
+            Cluster by age groups & sku categories (of most frequent purchases)
+            Age groups:
+            < 15
+            15 - 24
+            25 - 34
+            35 - 44
+            45 - 54
+            54 - 64
+            65 +
+            SKU categories:
+            accessories
+            decorations
+            figures
+            kitchen_accessories
+            outfits
+         */
+        kMeans.setK(7 * 5);
+
+        // Build the features column as Spark's KMeans need it
+        var transformedDataset = new VectorAssembler().setInputCols(new String[]{"age", "skuCategory"})
+                .setOutputCol((kMeans.getFeaturesCol())).transform(dataset);
+
+        return kMeans.fit(transformedDataset);
+    }
+
+
+    @Nonnull
+    @Override
+    public Dataset<Row> predict(@Nonnull KMeansModel model, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters) throws JsonProcessingException {
+        var dataset = super.convertJsonStringToDataset(jsonString);
+        var transformedDataset = new VectorAssembler().setInputCols(new String[]{"age", "skuCategory"})
+                .setOutputCol(model.getFeaturesCol()).transform(dataset);
+
+        return model.transform(transformedDataset);
+    }
+
 
     @Override
     @Nonnull
@@ -89,46 +131,5 @@ public class ClusterAnalysisOnRecentPurchaseExample extends AbstractMachineLearn
 
         return jdbcDataset.join(transformedCsvDataset, joinColumn)
                 .select("memberId", "age", "gender", "tier", "skuCategory");
-    }
-
-    @Nonnull
-    public KMeansModel buildModel(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) {
-        var kMeans = new KMeans();
-        /*
-            Cluster by age groups & sku categories (of most frequent purchases)
-            Age groups:
-            < 15
-            15 - 24
-            25 - 34
-            35 - 44
-            45 - 54
-            54 - 64
-            65 +
-            SKU categories:
-            accessories
-            decorations
-            figures
-            kitchen_accessories
-            outfits
-         */
-        kMeans.setK(7 * 5);
-
-        // Build the features column as Spark's KMeans need it
-        var transformedDataset = new VectorAssembler().setInputCols(new String[]{"age", "skuCategory"})
-                .setOutputCol((kMeans.getFeaturesCol())).transform(dataset);
-
-        return kMeans.fit(transformedDataset);
-    }
-
-    @Override
-    @Nonnull
-    @SneakyThrows
-    public Dataset<Row> predict(@Nonnull KMeansModel model, @Nonnull String jsonString) {
-        var jsonNode = objectMapper.readTree(jsonString);
-        var dataset = jsonNodeToDatasetConverter.convert(jsonNode);
-        var transformedDataset = new VectorAssembler().setInputCols(new String[]{"age", "skuCategory"})
-                .setOutputCol(model.getFeaturesCol()).transform(dataset);
-
-        return model.transform(transformedDataset);
     }
 }
