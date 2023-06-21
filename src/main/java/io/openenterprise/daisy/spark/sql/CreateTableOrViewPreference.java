@@ -14,4 +14,28 @@ public enum CreateTableOrViewPreference {
                 return false;
         }
     }
+
+    public boolean isTable() {
+        switch (this) {
+            case CREATE_TABLE_APPEND:
+            case CREATE_TABLE_ERROR_IF_EXISTS:
+            case CREATE_TABLE_IGNORE_IF_EXISTS:
+            case CREATE_TABLE_OVERWRITE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isView() {
+        switch (this) {
+            case CREATE_GLOBAL_VIEW:
+            case CREATE_LOCAL_VIEW:
+            case CREATE_OR_REPLACE_GLOBAL_VIEW:
+            case CREATE_OR_REPLACE_LOCAL_VIEW:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

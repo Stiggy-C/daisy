@@ -96,7 +96,7 @@ public abstract class AbstractSparkSqlService {
                 throw new UnsupportedOperationException();
         }
 
-        if (StringUtils.equals("delta", format) && StringUtils.isNotEmpty(path)) {
+        if (StringUtils.isNotEmpty(format) && isExternalDeltaTable(format, path)) {
             dataFrameWriter.save();
         } else {
             dataFrameWriter.saveAsTable(tableOrViewName);
@@ -197,6 +197,11 @@ public abstract class AbstractSparkSqlService {
         return StringUtils.equals("delta", getFormat(parameters, null)) &&
                 StringUtils.isNotEmpty(getPath(parameters, null));
     }
+
+    protected boolean isExternalDeltaTable(@Nonnull String format, @Nullable String path) {
+        return StringUtils.equals("delta", format) && StringUtils.isNotEmpty(path);
+    }
+
 
     protected boolean tableOrViewExists(@Nonnull String tableOrViewName) {
         return sparkSession.catalog().tableExists(tableOrViewName);

@@ -1,9 +1,8 @@
 package io.openenterprise.daisy.rs;
 
 import io.openenterprise.daisy.rs.model.BuildDatasetResponse;
-import io.openenterprise.daisy.rs.model.CreateTempViewPreference;
+import io.openenterprise.daisy.rs.model.CreateTableOrViewPreference;
 import io.openenterprise.daisy.spark.sql.AbstractSparkSqlService;
-import io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -24,8 +23,7 @@ public class DatasetApiImpl implements DatasetApi {
     @SneakyThrows
     @Override
     public BuildDatasetResponse buildDataset(@Nonnull Map<String, Object> parameters, @Nonnull String name,
-                                             @Nonnull Boolean createTempView,
-                                             @Nullable CreateTempViewPreference createTempViewPreference) {
+                                             @Nullable CreateTableOrViewPreference createTempViewPreference) {
         if (!applicationContext.containsBean(name)) {
             throw new NoSuchBeanDefinitionException(name);
         }
@@ -34,22 +32,23 @@ public class DatasetApiImpl implements DatasetApi {
 
         assert bean instanceof AbstractSparkSqlService;
 
-        var mappedCreateTempViewPreference
-                = mapCreateTempViewPreference(createTempView, createTempViewPreference);
+        var mappedCreateTempViewPreference= mapCreateTableOrViewPreference(createTempViewPreference);
 
         ((AbstractSparkSqlService) bean).buildDataset(parameters, mappedCreateTempViewPreference);
 
-        return new BuildDatasetResponse().createdView(createTempView).viewType(
-                Objects.isNull(mappedCreateTempViewPreference)? null :
-                        mappedCreateTempViewPreference.isGlobalView()? BuildDatasetResponse.ViewTypeEnum.GLOBAL :
-                                BuildDatasetResponse.ViewTypeEnum.LOCAL);
+        boolean createdTable = Objects.nonNull(mappedCreateTempViewPreference) && mappedCreateTempViewPreference.isTable();
+        boolean createdView = Objects.nonNull(mappedCreateTempViewPreference) && mappedCreateTempViewPreference.isView();
+        BuildDatasetResponse.ViewTypeEnum viewType = createdView? mappedCreateTempViewPreference.isGlobalView()?
+                BuildDatasetResponse.ViewTypeEnum.GLOBAL: BuildDatasetResponse.ViewTypeEnum.LOCAL : null;
+
+        return new BuildDatasetResponse().createdTable(createdTable).createdView(createdView).viewType(viewType);
     }
 
     @Nullable
-    private static CreateTableOrViewPreference mapCreateTempViewPreference(
-            @Nonnull Boolean createTempView, @Nullable CreateTempViewPreference createTempViewPreference) {
-        return createTempView && Objects.nonNull(createTempViewPreference) ?
-                CreateTableOrViewPreference.valueOf(createTempViewPreference.toString()) :
+    private static io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference mapCreateTableOrViewPreference(
+            @Nullable CreateTableOrViewPreference createTableOrViewPreference) {
+        return Objects.nonNull(createTableOrViewPreference) ?
+                io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference.valueOf(createTableOrViewPreference.toString()) :
                 null;
     }
 }

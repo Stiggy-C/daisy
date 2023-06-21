@@ -17,16 +17,11 @@ paths:
           required: true
           schema:
             type: string
-        - name: createTempView
+        - name: createTableOrViewPreference
           in: query
           required: false
           schema:
-            type: boolean
-        - name: createTempViewPreference
-          in: query
-          required: false
-          schema:
-            $ref: '#/components/schemas/CreateTempViewPreference'
+            $ref: '#/components/schemas/CreateTableOrViewPreference'
       requestBody:
         required: true
         content:
@@ -163,8 +158,11 @@ components:
     BuildDatasetResponse:
       type: object
       required:
+        - createdTable
         - createdView
       properties:
+        createdTable:
+          type: boolean
         createdView:
           type: boolean
         viewType:
@@ -172,13 +170,17 @@ components:
           enum:
             - GLOBAL
             - LOCAL
-    CreateTempViewPreference:
+    CreateTableOrViewPreference:
       type: string
       enum:
-        - CREATE_GLOBAL
-        - CREATE_LOCAL
-        - CREATE_OR_REPLACE_GLOBAL
-        - CREATE_OR_REPLACE_LOCAL
+        - CREATE_GLOBAL_VIEW
+        - CREATE_LOCAL_VIEW
+        - CREATE_OR_REPLACE_GLOBAL_VIEW
+        - CREATE_OR_REPLACE_LOCAL_VIEW
+        - CREATE_TABLE_APPEND
+        - CREATE_TABLE_ERROR_IF_EXISTS
+        - CREATE_TABLE_IGNORE_IF_EXISTS
+        - CREATE_TABLE_OVERWRITE
     Parameters:
       type: object
       additionalProperties: true

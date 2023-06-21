@@ -27,17 +27,35 @@ io.openenterprise.daisy.spark.sql.AbstractSparkSqlService.buildDataset(java.util
   * Keeping it simple & stupid and does not require a rocket scientist to work with Daisy
 
 ## Core components
-In the lowest level, Daisy provide 4 core components for developers/engineers who have exposures to Apache Spark.
+In the lowest level, Daisy provide 5 core components for developers/engineers who have exposures to Apache Spark.
+
+### AbstractSparkSqlService
+This class is the base of other classes. Necessary methods to build (Spark) dataset and to create a (Spark) table/view 
+as implemented in this class. It also defines the (abstract) methods which need to be implemented when extending this 
+class.
+
+The following methods are implemented in this class,
+
+* buildDataset(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference)
+* createTable
+* createView
+
+The following abstract methods are defined in this class and must be implemented when extending,
+
+* buildDataset(java.util.Map<java.lang.String,?>)
 
 ### AbstractDatasetService
-This class represent building an aggregated dataset on an Apache Spark cluster. Furthermore, it provides logic to run as
-pipeline providing that writeDataset is implemented. Spark engineers just need to extends this class and fill in the 
-following methods, 
+This class contains method about building an aggregated (Spark) dataset. Furthermore, it provides the ability to be run
+as a data pipeline providing that the necessary method is implemented. Spark engineers just need to extends this class 
+and fill in the following methods, 
 
-* Dataset<Row> buildDataset(Map<String, ?> parameters)
-* void writeDataset(Dataset<Row> dataset, Map<String, ?> parameters) [if want to form a pipeline]
+* buildDataset(java.util.Map<java.lang.String,?>)
+* pipeline(java.util.Map<java.lang.String,?>)
+* pipeline(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference)
+* writeDataset
 
-The implementation of this class is ideal to be used to form a pipeline in a batch job.
+The implementation of this class is ideal to be used to build the dataset for testing & to build the dataset to create 
+the (Spark) table/view for be used by others & to form the pipeline in a batch job.
 
 [RecentPurchaseExampleDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java)
 is an example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 
@@ -47,14 +65,16 @@ Usage of [RecentPurchaseExampleDatasetService.java](src/main/java/io/openenterpr
 can be seen from [RecentPurchaseExampleDatasetServiceTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetServiceTest.java)
 
 ### AbstractStreamingDatasetService
-This class represent building an aggregated streaming dataset on an Apache Spark cluster. Furthermore, it provides logic
-to run as a streaming pipeline providing that writeDataset is implemented. Spark engineers just need to extends this class and fill in the
-following methods,
+This class contains methods about building an aggregated (Spark) streaming dataset. Furthermore, it provides the ability 
+to be run as a streaming pipeline providing that writeDataset is implemented. Spark engineers just need to extends 
+this class and fill in the following methods,
 
-* Dataset<Row> buildDataset(Map<String, ?> parameters)
-* void writeDataset(Dataset<Row> dataset, Map<String, ?> parameters) [if want to form a streaming pipeline]
+* buildDataset(java.util.Map<java.lang.String,?>)
+* streamingPipeline(java.util.Map<java.lang.String,?>)
+* streamingPipeline(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference)
+* writeDataset
 
-The implementation of this class is ideal for continuous data integration.
+The implementation of this class is ideal to build a streaming pipeline for continuous data integration.
 
 [RecentPurchaseExampleStreamingDatasetService.java](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetService.java)
 is an example implementation of this class. It is the streaming version of 
@@ -68,9 +88,10 @@ This class represents the foundation of a machine learning operation running on 
 just need to extends this class and fill in the following methods to build/train machine learning model & use the 
 built/trained model to get a prediction,
 
-* Dataset<Row> buildDataset(Map<String, ?> parameters)
-* M buildModel(Dataset<Row> dataset, Map<String, ?> parameters)
-* Dataset<Row> predict(M model, String jsonString)
+* buildDataset(java.util.Map<java.lang.String,?>)
+* buildModel(org.apache.spark.sql.Dataset<org.apache.spark.sql.Row>, java.util.Map<java.lang.String,java.lang.Object>, io.openenterprise.daisy.spark.ml.ModelStorage)
+* buildModel(org.apache.spark.sql.Dataset<org.apache.spark.sql.Row>, java.util.Map<java.lang.String,?>)
+* predict
 
 [ClusterAnalysisOnRecentPurchaseExample](src/main/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
 for an example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 
@@ -86,10 +107,19 @@ certain models build by tools like [scikit-learn](https://scikit-learn.org/stabl
 imported and run on Apache Spark/Daisy. This class provides method to import the PMML file from file or internet or from
 S3. Imported PMML file will be converted to Spark model. Such model can be used by the predict method of this class.
 
-Spark engineers do not have to do anything special, he/she just need to extends 
-this class and give it an unique (Spring) bean name when necessary.
+Spark engineers do not have to do anything special, he/she just need to extends this class and give it an unique 
+(Spring) bean name when necessary.
 
 ## RESTful APIs
+Daisy provides the following APIs out of the box. The OpenAPI spec can be found [here](src/main/resources/openapi.yaml).
+
+### DatasetApiImpl
+
+[DatasetApiImpl](src/main/java/io/openenterprise/daisy/rs/DatasetApiImpl.java) provides the following endpoints:
+
+#### buildDataset
+POST (http|https:)//$host:$port/services/datasets/{beanName}?createTableOrViewPreference=$createTableOrViewPreference
+
 ### MlApiImpl
 
 [MlApiImpl](src/main/java/io/openenterprise/daisy/spark/sql/rs/MlApiImpl.java) provides the following endpoints:
