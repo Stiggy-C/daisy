@@ -30,9 +30,9 @@ io.openenterprise.daisy.spark.sql.AbstractSparkSqlService.buildDataset(java.util
 In the lowest level, Daisy provide 5 core components for developers/engineers who have exposures to Apache Spark.
 
 ### AbstractSparkSqlService
-This class is the base of other classes. Necessary methods to build (Spark) dataset and to create a (Spark) table/view 
-as implemented in this class. It also defines the (abstract) methods which need to be implemented when extending this 
-class.
+This class is the base of other dataset related classes in Daisy. Necessary methods to build (Spark) dataset and to 
+create a (Spark) table/view are implemented in this class. It also defines the (abstract) methods which need to be 
+implemented when extending this class.
 
 The following methods are implemented in this class,
 
@@ -40,9 +40,9 @@ The following methods are implemented in this class,
 * createTable
 * createView
 
-The following abstract methods are defined in this class and must be implemented when extending,
+The following abstract methods are defined in this class and must be implemented when extending this class.
 
-* buildDataset(java.util.Map<java.lang.String,?>)
+* buildDataset(java.util.Map<java.lang.String,?>) (Custom logic to build the desired dataset from data sources goes here.)
 
 ### AbstractDatasetService
 This class contains method about building an aggregated (Spark) dataset. Furthermore, it provides the ability to be run
@@ -84,9 +84,9 @@ Usage of [RecentPurchaseExampleStreamingDatasetService](src/main/java/io/openent
 can be seen from [RecentPurchaseExampleStreamingDatasetServiceTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetServiceTest.java)
 
 ### AbstractMachineLearningService
-This class represents the foundation of a machine learning operation running on an Apache Spark cluster. Spark engineers
-just need to extends this class and fill in the following methods to build/train machine learning model & use the 
-built/trained model to get a prediction,
+This class contains the foundation of machine learning workflow running on an Apache Spark cluster. Spark engineers
+just need to extend this class and fill in the following methods to build/train machine learning model, store the built 
+model to both cloud & local storage and use the built/trained model to get a prediction,
 
 * buildDataset(java.util.Map<java.lang.String,?>)
 * buildModel(org.apache.spark.sql.Dataset<org.apache.spark.sql.Row>, java.util.Map<java.lang.String,java.lang.Object>, io.openenterprise.daisy.spark.ml.ModelStorage)
@@ -94,12 +94,19 @@ built/trained model to get a prediction,
 * predict
 
 [ClusterAnalysisOnRecentPurchaseExample](src/main/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
-for an example implementation of this class. It will read the transactions in a CSV files which is being stored in a S3 
+is an example implementation of this class. It will read (fake) sales transactions in a CSV files which is stored in a S3 
 bucket to be aggregated with the membership table in a MySQL database. Aggregated data will be massaged to be used to 
-build a ML model to get prediction.
+build a ML model to get a prediction on user input.
 
 Usage of [ClusterAnalysisOnRecentPurchaseExample](src/test/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
 can be seen from [ClusterAnalysisOnRecentPurchaseExampleTest](src/test/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExampleTest.java)
+
+[HongKongMark6LotteryResultClusterAnalysis](src/test/java/io/openenterprise/daisy/examples/ml/HongKongMark6LotteryResultClusterAnalysis.java)
+is another example implementation of this class. This example also makes use of [Delta Lake](https://delta.io/). It 
+will store the dataset into the given S3 bucket in Delta Lake format to be used later during prediction.
+
+Usage of [HongKongMark6LotteryResultClusterAnalysis](src/test/java/io/openenterprise/daisy/examples/ml/HongKongMark6LotteryResultClusterAnalysis.java)
+can be seen from [HongKongMark6LotteryResultClusterAnalysisTest](src/test/java/io/openenterprise/daisy/examples/ml/HongKongMark6LotteryResultClusterAnalysisTest.java)
 
 ### AbstractPmmlBasedMachineLearning
 **P**redictive **M**odel **M**arkup **L**anguage (PMML) is an XML-based predictive model interchange format. It allows
