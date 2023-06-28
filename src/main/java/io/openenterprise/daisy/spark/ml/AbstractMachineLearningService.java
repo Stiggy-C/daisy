@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.openenterprise.daisy.spark.sql.AbstractSparkSqlService;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import lombok.Getter;
-import org.apache.spark.ml.Model;
 import org.apache.spark.ml.Transformer;
 import org.apache.spark.ml.util.MLWritable;
 import org.apache.spark.sql.Dataset;
@@ -23,7 +22,7 @@ import java.util.Map;
  *
  * @param <M>
  */
-public abstract class AbstractMachineLearningService<M extends Model<M> & MLWritable> extends AbstractSparkSqlService
+public abstract class AbstractMachineLearningService<M extends Transformer & MLWritable> extends AbstractSparkSqlService
         implements MachineLearning<M> {
 
     @Inject

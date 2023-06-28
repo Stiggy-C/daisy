@@ -1,7 +1,6 @@
 package io.openenterprise.daisy.spark.ml;
 
-
-import org.apache.spark.ml.Model;
+import org.apache.spark.ml.Transformer;
 import org.apache.spark.ml.util.MLWritable;
 
 import javax.annotation.Nonnull;
@@ -11,7 +10,7 @@ public interface ModelStorage {
 
     URI getUriOfModel(@Nonnull String uid);
 
-    <M extends Model<M> & MLWritable> M load(@Nonnull Class<M> modelClass, @Nonnull String uid);
+    <M extends Transformer & MLWritable> M load(@Nonnull Class<M> modelClass, @Nonnull String uid);
 
-    <M extends Model<M> & MLWritable> URI store(@Nonnull M model);
+    <M extends Transformer & MLWritable> URI store(@Nonnull M model);
 }

@@ -6,7 +6,7 @@ import io.openenterprise.daisy.spark.ml.ModelStorage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.spark.ml.Model;
+import org.apache.spark.ml.Transformer;
 import org.apache.spark.ml.util.MLWritable;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +51,7 @@ public class AmazonS3ModelStorage implements ModelStorage {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     @Override
-    public <M extends Model<M> & MLWritable> M load(@Nonnull Class<M> modelClass, @NotNull String uid) {
+    public <M extends Transformer & MLWritable> M load(@Nonnull Class<M> modelClass, @NotNull String uid) {
         var s3Uri = getUriOfModel(uid);
 
         return (M) MethodUtils.invokeStaticMethod(modelClass, "load", StringUtils.replace(
@@ -61,7 +61,7 @@ public class AmazonS3ModelStorage implements ModelStorage {
 
     @SneakyThrows
     @Override
-    public <M extends Model<M> & MLWritable> URI store(@NotNull M model) {
+    public <M extends Transformer & MLWritable> URI store(@NotNull M model) {
         var s3Uri = getUriOfModel(model.uid());
 
         model.write().overwrite().save(StringUtils.replace(s3Uri.toString(), "s3", "s3a"));
