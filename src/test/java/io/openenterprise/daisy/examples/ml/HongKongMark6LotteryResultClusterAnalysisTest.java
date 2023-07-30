@@ -1,7 +1,7 @@
 package io.openenterprise.daisy.examples.ml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.openenterprise.daisy.spark.Constants;
+import io.openenterprise.daisy.Constants;
 import io.openenterprise.daisy.spark.ml.amazonaws.AmazonS3ModelStorage;
 import io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference;
 import org.apache.hadoop.shaded.com.google.common.collect.ImmutableMap;
@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@Import(AbstractTest.Configuration.class)
+@Import(Configuration.class)
 @TestPropertySource(properties = {"daisy.s3.bucket=daisy", "spring.profiles.active=local_spark,ml_example"})
 public class HongKongMark6LotteryResultClusterAnalysisTest extends AbstractTest {
 

@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.examples;
 
-import io.openenterprise.daisy.spark.sql.AbstractStreamingDatasetService;
+import io.openenterprise.daisy.spark.sql.AbstractStreamingDatasetServiceImpl;
 import io.openenterprise.daisy.spark.api.java.function.ForeachJdbcWriter;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Component("recentPurchaseExampleStreamingPipeline")
 @Profile("pipeline_example")
-public class RecentPurchaseExampleStreamingDatasetService extends AbstractStreamingDatasetService {
+public class RecentPurchaseExampleStreamingDatasetService extends AbstractStreamingDatasetServiceImpl {
 
     /*
      * Can not be a children (sub-path) of csvFolderS3Uri!!
@@ -82,7 +82,7 @@ public class RecentPurchaseExampleStreamingDatasetService extends AbstractStream
     }
 
     @Override
-    protected StreamingQuery writeDataset(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) throws TimeoutException {
+    public StreamingQuery writeDataset(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) throws TimeoutException {
         var scalaImmutableMap = new Map4<>(JDBCOptions.JDBC_TABLE_NAME(), "recent_purchases",
                 JDBCOptions.JDBC_URL(), postgresJdbcUrl,
                 "user", postgresJdbcUser,

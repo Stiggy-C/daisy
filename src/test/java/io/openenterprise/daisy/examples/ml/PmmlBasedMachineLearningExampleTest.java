@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.trivago.triava.tcache.EvictionPolicy;
 import com.trivago.triava.tcache.core.Builder;
-import io.openenterprise.daisy.ApplicationConfiguration;
+import io.openenterprise.daisy.springframework.boot.autoconfigure.ApplicationConfiguration;
 import io.openenterprise.daisy.Configuration;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import org.junit.jupiter.api.Test;
@@ -26,12 +26,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
-@Import({ApplicationConfiguration.class, Configuration.class, PmmlBasedMachineLearningExampleServiceTest.Configuration.class})
+@Import({ApplicationConfiguration.class, Configuration.class, PmmlBasedMachineLearningExampleTest.Configuration.class})
 @TestPropertySource(properties = {"spring.profiles.active=local_spark,ml_example"})
-public class PmmlBasedMachineLearningExampleServiceTest {
+public class PmmlBasedMachineLearningExampleTest {
 
     @Autowired
-    protected PmmlMachineLearningExampleService pmmlBasedMachineLearningExample;
+    protected PmmlMachineLearningExample pmmlBasedMachineLearningExample;
 
     @Test
     public void test() throws IOException {
@@ -62,8 +62,8 @@ public class PmmlBasedMachineLearningExampleServiceTest {
         }
 
         @Bean
-        protected PmmlMachineLearningExampleService pmmlBasedMachineLearningExample() {
-            return new PmmlMachineLearningExampleService();
+        protected PmmlMachineLearningExample pmmlBasedMachineLearningExample() {
+            return new PmmlMachineLearningExample();
         }
 
         @Bean

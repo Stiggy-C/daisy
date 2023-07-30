@@ -3,7 +3,7 @@ package io.openenterprise.daisy.spark.sql.rs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import io.openenterprise.daisy.examples.ml.RecentPurchaseExampleClusterAnalysisTest;
-import io.openenterprise.daisy.examples.ml.PmmlBasedMachineLearningExampleServiceTest;
+import io.openenterprise.daisy.examples.ml.PmmlBasedMachineLearningExampleTest;
 import io.openenterprise.daisy.rs.model.TrainingResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @EnableAutoConfiguration
 @Import({RecentPurchaseExampleClusterAnalysisTest.Configuration.class,
-        PmmlBasedMachineLearningExampleServiceTest.Configuration.class, AbstractApiTest.Configuration.class,
+        PmmlBasedMachineLearningExampleTest.Configuration.class, AbstractApiTest.Configuration.class,
         MlApiImplTest.Configuration.class})
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true", "spring.profiles.active=local_spark,ml_example"})
 class MlApiImplTest extends AbstractApiTest {

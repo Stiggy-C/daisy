@@ -1,0 +1,136 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!pragma layout smetana
+!theme mars
+
+skinparam groupInheritance 1
+
+title "Daisy class diagram"
+
+package "io.openenterprise.daisy" {
+
+    abstract class PlotSettings {}
+
+    class PlotlySettings {
+        #Boolean addSuffixIfExists
+        #plotly.Config config
+        #plotly.layout.Layout layout
+        #Boolean openInBrowser
+        #Boolean useCdn
+    }
+
+    PlotSettings <|-- PlotlySettings
+}
+
+package "io.openenterprise.daisy.spark.sql" {
+
+    enum CreateTableOrViewPreference {
+        CREATE_GLOBAL_VIEW
+        CREATE_LOCAL_VIEW
+        CREATE_OR_REPLACE_GLOBAL_VIEW
+        CREATE_OR_REPLACE_LOCAL_VIEW
+        CREATE_TABLE_APPEND
+        CREATE_TABLE_ERROR_IF_EXISTS
+        CREATE_TABLE_IGNORE_IF_EXISTS
+        CREATE_TABLE_OVERWRITE
+    }
+
+    interface BaseDatasetService {
+        +Dataset<Row> buildDataset(Map<String, ?>, CreateTableOrViewPreference)
+        +Dataset<Row> buildDataset(Map<String, ?>): Dataset<Row>
+    }
+
+    interface DatasetService {
+        +void writeDataset(Dataset<Row> dataset, Map<String, ?>)
+    }
+
+    interface PlotGeneratingDatasetService {
+        +void plot(Dataset<Row> dataset, Map<String, ?>)
+        +String toPlotJson(Dataset<Row>, Map<String, ?>)
+    }
+
+    interface StreamingDatasetService {
+        +StreamingQuery writeDataset(Dataset<Row>, Map<String, ?>)
+    }
+
+    BaseDatasetService <|-- DatasetService
+    BaseDatasetService <|-- StreamingDatasetService
+    DatasetService <|-- PlotGeneratingDatasetService
+
+    abstract class AbstractBaseDatasetServiceImpl {
+        #void createTable(Dataset<Row>, String tableOrViewName, String, String, CreateTableOrViewPreference)
+        #void createView(Dataset<Row>, String, CreateTableOrViewPreference)
+        #String getFormat(Map<String, ?>)
+        #String getFormat(Map<String, ?>, String)
+        #String getPath(Map<String, ?>)
+        #String getPath(Map<String, ?>, String)
+        #String getTableName(Map<String, ?>)
+        #String getTableName(Map<String, ?>, String)
+        #String getViewName(Map<String, ?>)
+        #String getViewName(Map<String, ?>, String)
+        #boolean isExternalDeltaTable(Map<String, ?>)
+        #boolean isExternalDeltaTable(String, String)
+        #Dataset<Row> loadTableOrView(Map<String, ?>)
+        #boolean tableOrViewExists(String)
+    }
+
+    BaseDatasetService <|-- AbstractBaseDatasetServiceImpl
+
+    abstract class AbstractDatasetServiceImpl {
+        #pipeline(Map<String, ?>)
+        #pipeline(Map<String, ?>, CreateTableOrViewPreference)
+    }
+
+    AbstractBaseDatasetServiceImpl <|-- AbstractDatasetServiceImpl
+    DatasetService <|-- AbstractDatasetServiceImpl
+
+    abstract class AbstractPlotGeneratingDatasetServiceImpl<PD, PS extends PlotSetting> {
+        #PD getPlotData(Dataset<Row>, Map<String, ?>)
+        #String getPlotPath(Map<String, ?>)
+        #PS getPlotSetting(Map<String, ?>)
+        #File plot(String, PD, PS)
+        #void savePlotToCloudStorage(URI, File)
+        #String toPlotJson(PD, PS)
+    }
+
+    AbstractDatasetServiceImpl <|-- AbstractPlotGeneratingDatasetServiceImpl
+    PlotGeneratingDatasetService <|-- AbstractPlotGeneratingDatasetServiceImpl
+
+    abstract class AbstractStreamingDatasetServiceImpl {
+        +StreamingQuery streamingPipeline(Map<String, ?>)
+        +StreamingQuery streamingPipeline(Map<String, ?>, CreateTableOrViewPreference)
+    }
+
+    AbstractBaseDatasetServiceImpl <|-- AbstractStreamingDatasetServiceImpl
+    StreamingDatasetService <|-- AbstractStreamingDatasetServiceImpl
+
+}
+package "io.openenterprise.daisy.spark.ml" {
+
+    interface MachineLearningService<T extends Model<T>> {
+        +Dataset<Row> predict(T, String, Map<String, ?>)
+    }
+
+    abstract class AbstractMachineLearningServiceImpl<M extends Model<M>> {
+        +M buildModel(Dataset<Row>, Map<String, Object>, ModelStorage)
+    }
+
+    abstract class AbstractPmmlMachineLearningService {
+        +importModel(String)
+        #createLocalTempFileForUri(URI)
+        #downloadFile(String)
+    }
+
+    interface ModelStorage {
+        +URI getUriOfModel(String)
+        +M load(Class<M extends Model<M>>, String)
+        +URI save(M model)
+    }
+
+    MachineLearningService <|-- AbstractMachineLearningServiceImpl
+    AbstractPlotGeneratingDatasetServiceImpl <|-- AbstractMachineLearningServiceImpl
+    MachineLearningService <|-- AbstractPmmlMachineLearningService
+}
+
+@enduml

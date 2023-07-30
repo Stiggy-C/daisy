@@ -12,5 +12,5 @@ public interface ModelStorage {
 
     <M extends Transformer & MLWritable> M load(@Nonnull Class<M> modelClass, @Nonnull String uid);
 
-    <M extends Transformer & MLWritable> URI store(@Nonnull M model);
+    <M extends Transformer & MLWritable> URI save(@Nonnull M model);
 }

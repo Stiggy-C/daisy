@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.trivago.triava.tcache.EvictionPolicy;
 import com.trivago.triava.tcache.core.Builder;
-import io.openenterprise.daisy.examples.AbstractTest;
 import io.openenterprise.daisy.examples.data.Gender;
 import io.openenterprise.daisy.examples.data.MemberTier;
 import io.openenterprise.daisy.spark.ml.amazonaws.AmazonS3ModelStorage;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
-import org.apache.commons.io.FileUtils;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.spark.ml.Transformer;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.ResourceUtils;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 

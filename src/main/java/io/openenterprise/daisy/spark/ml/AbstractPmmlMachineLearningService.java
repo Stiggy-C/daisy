@@ -34,7 +34,7 @@ import java.util.NoSuchElementException;
  * standard. Implementation of this class can import PMML based models exported by other big data libraries like
  * <a href="https://github.com/jpmml/sklearn2pmml">Scikit-Learn</a> for prediction.
  */
-public abstract class AbstractPmmlMachineLearningService implements MachineLearning<ScoreModel> {
+public abstract class AbstractPmmlMachineLearningService implements MachineLearningService<ScoreModel> {
 
     @Inject
     protected AmazonS3 amazonS3;

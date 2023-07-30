@@ -1,9 +1,8 @@
 package io.openenterprise.daisy.rs;
 
-import io.openenterprise.daisy.rs.PipelinesApi;
 import io.openenterprise.daisy.rs.model.TriggerPipelineResponse;
-import io.openenterprise.daisy.spark.sql.AbstractDatasetService;
-import io.openenterprise.daisy.spark.sql.AbstractStreamingDatasetService;
+import io.openenterprise.daisy.spark.sql.AbstractDatasetServiceImpl;
+import io.openenterprise.daisy.spark.sql.AbstractStreamingDatasetServiceImpl;
 import lombok.SneakyThrows;
 import org.apache.spark.sql.AnalysisException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -33,10 +32,10 @@ public class PipelinesApiImpl implements PipelinesApi {
         var bean = applicationContext.getBean(name);
         TriggerPipelineResponse triggerPipelineResponse;
 
-        if (isAssignable(bean.getClass(), AbstractDatasetService.class) || isAssignable(bean.getClass(), AbstractStreamingDatasetService.class)) {
-            triggerPipelineResponse = isAssignable(bean.getClass(), AbstractDatasetService.class) ?
-                    runPipeline((AbstractDatasetService) bean, parameters) :
-                    startStreamingPipeline((AbstractStreamingDatasetService) bean, parameters);
+        if (isAssignable(bean.getClass(), AbstractDatasetServiceImpl.class) || isAssignable(bean.getClass(), AbstractStreamingDatasetServiceImpl.class)) {
+            triggerPipelineResponse = isAssignable(bean.getClass(), AbstractDatasetServiceImpl.class) ?
+                    runPipeline((AbstractDatasetServiceImpl) bean, parameters) :
+                    startStreamingPipeline((AbstractStreamingDatasetServiceImpl) bean, parameters);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -46,7 +45,7 @@ public class PipelinesApiImpl implements PipelinesApi {
 
     @Nonnull
     protected TriggerPipelineResponse runPipeline(
-            @Nonnull AbstractDatasetService datasetService, @Nonnull Map<String, Object> parameters) throws AnalysisException {
+            @Nonnull AbstractDatasetServiceImpl datasetService, @Nonnull Map<String, Object> parameters) throws AnalysisException {
         datasetService.pipeline(parameters);
 
         return new TriggerPipelineResponse().isStreaming(false);
@@ -54,7 +53,7 @@ public class PipelinesApiImpl implements PipelinesApi {
 
     @Nonnull
     protected TriggerPipelineResponse startStreamingPipeline(
-            @Nonnull AbstractStreamingDatasetService streamingDatasetService, @Nonnull Map<String, Object> parameters)
+            @Nonnull AbstractStreamingDatasetServiceImpl streamingDatasetService, @Nonnull Map<String, Object> parameters)
             throws TimeoutException, AnalysisException {
         var streamingQuery = streamingDatasetService.streamingPipeline(parameters);
 

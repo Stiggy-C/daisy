@@ -150,7 +150,7 @@ public class Configuration {
         var dockerImageName = DockerImageName.parse(SPARK_DOCKER_IMAGE_TAG);
         var genericContainer = new GenericContainer<>(dockerImageName)
                 .waitingFor(Wait.forLogMessage(".*Master: I have been elected leader! New state: ALIVE.*", 1))
-                .withCommand("/opt/bitnami/spark/sbin/start-master.sh")
+                .withCommand("/opt/bitnami/spark/sbin/start-master.sh | /opt/bitnami/spark/sbin/start-thriftserver.sh")
                 .withEnv("SPARK_MASTER_HOST", "0.0.0.0")
                 .withExposedPorts(4044, 7077, 8080)
                 .withNetwork(network)

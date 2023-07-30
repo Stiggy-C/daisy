@@ -8,7 +8,7 @@ import org.apache.spark.sql.Row;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public interface MachineLearning<T extends Transformer> {
+public interface MachineLearningService<T extends Transformer> {
 
     /**
      * Make 1 or more predictions by making use of given model. Given input json can be one row or multiple rows of data.
@@ -22,5 +22,4 @@ public interface MachineLearning<T extends Transformer> {
     @Nonnull
     Dataset<Row> predict(@Nonnull T model, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters)
             throws JsonProcessingException;
-
 }

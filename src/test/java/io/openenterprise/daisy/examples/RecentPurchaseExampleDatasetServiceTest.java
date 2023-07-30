@@ -1,6 +1,8 @@
 package io.openenterprise.daisy.examples;
 
+import io.openenterprise.daisy.Constants;
 import io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference;
+import org.apache.commons.io.FileUtils;
 import org.apache.spark.sql.AnalysisException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +22,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Properties;
 
@@ -37,7 +41,7 @@ class RecentPurchaseExampleDatasetServiceTest extends AbstractTest {
     protected RecentPurchaseExampleDatasetService recentPurchaseExamplePipeline;
 
     @Test
-    public void test() throws AnalysisException {
+    public void test() throws AnalysisException, IOException {
         var dataset = recentPurchaseExamplePipeline.buildDataset(Map.of("csvS3Uri",
                 "s3a://" + TEST_S3_BUCKET + "/csv_files/transactions.csv"), CreateTableOrViewPreference.CREATE_GLOBAL_VIEW);
 
@@ -53,7 +57,31 @@ class RecentPurchaseExampleDatasetServiceTest extends AbstractTest {
         assertNotNull(numberOfRecentPurchases);
         assertEquals(dataset.count(), numberOfRecentPurchases);
 
-        assertNotNull(sparkSession.table(recentPurchaseExamplePipeline.getClass().getSimpleName()));
+        assertNotNull(sparkSession.table("global_temp." + recentPurchaseExamplePipeline.getClass()
+                .getSimpleName()));
+
+        var plotData = recentPurchaseExamplePipeline.getPlotData(dataset, Map.of());
+
+        assertNotNull(plotData);
+        assertEquals(2, plotData.size());
+
+        var plotSetting = recentPurchaseExamplePipeline.getPlotSetting(Map.of());
+
+        assertNotNull(plotSetting);
+        assertEquals("recentPurchaseExamplePipeline", plotSetting.getLayout().title().get());
+
+        var s3ObjectName = "plots/recentPurchaseExamplePipeline_" + Instant.now().toEpochMilli() + ".html";
+
+        recentPurchaseExamplePipeline.plot(dataset, Map.of(Constants.PLOT_PATH_PARAMETER_NAME.getValue(), "s3://"
+                + TEST_S3_BUCKET + "/" + s3ObjectName));
+
+        assertTrue(amazonS3.doesObjectExist(TEST_S3_BUCKET, s3ObjectName));
+        var path = Files.createTempFile("recentPurchaseExamplePipeline_" + Instant.now().toEpochMilli(),
+                "html");
+        var file = path.toFile();
+        FileUtils.copyInputStreamToFile(amazonS3.getObject(TEST_S3_BUCKET, s3ObjectName).getObjectContent(), file);
+
+        assertTrue(Files.size(path) > 0);
     }
 
     @PostConstruct

@@ -2,7 +2,9 @@ package io.openenterprise.daisy.spark.ml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.openenterprise.daisy.spark.sql.AbstractSparkSqlService;
+import io.openenterprise.daisy.PlotSettings;
+import io.openenterprise.daisy.spark.sql.AbstractDatasetServiceImpl;
+import io.openenterprise.daisy.spark.sql.AbstractPlotGeneratingDatasetServiceImpl;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import lombok.Getter;
 import org.apache.spark.ml.Transformer;
@@ -22,15 +24,15 @@ import java.util.Map;
  *
  * @param <M>
  */
-public abstract class AbstractMachineLearningService<M extends Transformer & MLWritable> extends AbstractSparkSqlService
-        implements MachineLearning<M> {
+public abstract class AbstractMachineLearningServiceImpl<M extends Transformer & MLWritable, PD, PS extends PlotSettings>
+        extends AbstractPlotGeneratingDatasetServiceImpl<PD, PS> implements MachineLearningService<M> {
 
     @Inject
     protected JsonNodeToDatasetConverter jsonNodeToDatasetConverter;
 
     @Inject
-    @Named("sparkModelCache")
-    protected Cache<String, Transformer> modelCache;
+    @Named("sparkMlModelCache")
+    protected Cache<String, Transformer> mlModelCache;
 
     @Getter
     protected Class<M> modelClass;
@@ -38,7 +40,7 @@ public abstract class AbstractMachineLearningService<M extends Transformer & MLW
     @Inject
     protected ObjectMapper objectMapper;
 
-    protected AbstractMachineLearningService(@Nonnull Class<M> modelClass) {
+    protected AbstractMachineLearningServiceImpl(@Nonnull Class<M> modelClass) {
         this.modelClass = modelClass;
     }
 
@@ -57,8 +59,8 @@ public abstract class AbstractMachineLearningService<M extends Transformer & MLW
             @Nonnull Dataset<Row> dataset, @Nonnull Map<String, Object> parameters, @Nonnull ModelStorage modelStorage) {
         var model = buildModel(dataset, parameters);
 
-        modelCache.put(model.uid(), model);
-        modelStorage.store(model);
+        mlModelCache.put(model.uid(), model);
+        modelStorage.save(model);
 
         return model.uid();
     }
@@ -83,7 +85,7 @@ public abstract class AbstractMachineLearningService<M extends Transformer & MLW
     public Dataset<Row> predict(@Nonnull String modelId, @Nonnull String jsonString, @Nonnull Map<String, ?> parameters,
                                 @Nonnull ModelStorage modelStorage)
             throws JsonProcessingException {
-        var model = modelCache.containsKey(modelId)? (M) modelCache.get(modelId)
+        var model = mlModelCache.containsKey(modelId)? (M) mlModelCache.get(modelId)
                 : modelStorage.load(modelClass, modelId);
 
         return predict(model, jsonString, parameters);

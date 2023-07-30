@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v16.0/dist
+
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Groups/all.puml
+!include AWSPuml/Containers/all.puml
+!include AWSPuml/Database/all.puml
+!include AWSPuml/Storage/all.puml
+
+!theme mars
+
+skinparam linetype ortho
+left to right direction
+
+title "Daisy (with Standalone Apache Spark cluster) component diagram"
+
+AWSCloudGroup(cloud) {
+
+    RegionGroup(region0, "Tokyo") {
+
+        SimpleStorageServiceBucketWithObjects(s3Bucket0, "Delta lake storage", "")
+
+        VPCGroup(vpcTokyo0) {
+
+            PrivateSubnetGroup(privateSubNetGroup0) {
+
+                ElasticContainerService(elasticContainerService0, "ECS", "") {
+
+                    ElasticContainerServiceContainer2(daisy, "Daisy", "Trigger pipelines/Train models/Get predictions")
+                    ElasticContainerServiceContainer2(sparkMaster, "Spark Master", "")
+                    ElasticContainerServiceContainer2(sparkWorker2, "Spark Worker 3", "")
+                    ElasticContainerServiceContainer2(sparkWorker1, "Spark Worker 2", "")
+                    ElasticContainerServiceContainer2(sparkWorker0, "Spark Worker 1", "")
+
+                }
+
+            }
+
+        }
+
+        daisy -left-> sparkMaster
+        sparkMaster <--> sparkWorker2
+        sparkMaster <--> sparkWorker1
+        sparkMaster <--> sparkWorker0
+        sparkMaster <-right-> s3Bucket0
+
+        VPCGroup(vpcTokyo1) {
+
+            PrivateSubnetGroup("privateSubNetGroup1") {
+
+                AuroraPostgreSQLInstance(dataWarehouse, "Data warehouse", "")
+
+            }
+
+        }
+
+        VPCGroup(vpcTokyo2) {
+
+            PrivateSubnetGroup("privateSubNetGroup2") {
+
+                AuroraMySQLInstance(microservice0MySql, "MySQL" , "MySQL for Micro-service 0")
+
+            }
+
+        }
+
+        VPCGroup(vpcTokyo3) {
+
+            PrivateSubnetGroup("privateSubNetGroup3") {
+
+                AuroraMySQLInstance(microservice1MySql, "MySQL" , "MySQL for Micro-service 1")
+
+            }
+
+        }
+
+        dataWarehouse --> sparkMaster
+        microservice0MySql -down-> sparkMaster
+        microservice1MySql -down-> sparkMaster
+    }
+
+}
+
+@enduml

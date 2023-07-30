@@ -13,7 +13,8 @@ import java.util.Objects;
 /**
  * The base of a data pipeline to be run on an Apache Spark cluster.
  */
-public abstract class AbstractDatasetService extends AbstractSparkSqlService {
+public abstract class AbstractDatasetServiceImpl extends AbstractBaseDatasetServiceImpl
+        implements DatasetService {
 
     /**
      * Run this as a pipeline
@@ -48,6 +49,7 @@ public abstract class AbstractDatasetService extends AbstractSparkSqlService {
 
         writeDataset(dataset, parameters);
     }
+
     /**
      * Write the aggregated {@link Dataset} to desired data source (say a RDBMS like Postgres). Need to be filled in by
      * the implementation.
@@ -55,5 +57,6 @@ public abstract class AbstractDatasetService extends AbstractSparkSqlService {
      * @param dataset
      * @param parameters
      */
-    protected abstract void writeDataset(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters);
+    public abstract void writeDataset(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters);
+
 }

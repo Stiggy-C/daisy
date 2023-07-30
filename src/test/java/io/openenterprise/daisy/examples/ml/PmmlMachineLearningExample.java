@@ -4,7 +4,7 @@ import io.openenterprise.daisy.spark.ml.AbstractPmmlMachineLearningService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Component("pmmlBasedMachineLearningExample")
+@Component("pmmlMachineLearningExample")
 @Profile("ml_example")
-public class PmmlMachineLearningExampleService extends AbstractPmmlMachineLearningService {
+public class PmmlMachineLearningExample extends AbstractPmmlMachineLearningService {
 }

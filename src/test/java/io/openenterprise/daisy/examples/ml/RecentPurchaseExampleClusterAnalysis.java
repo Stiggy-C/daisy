@@ -1,27 +1,33 @@
 package io.openenterprise.daisy.examples.ml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.openenterprise.daisy.PlotlySettings;
 import io.openenterprise.daisy.examples.data.SkuCategory;
-import io.openenterprise.daisy.spark.ml.AbstractMachineLearningService;
-import lombok.SneakyThrows;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearningServiceImpl;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.spark.ml.clustering.KMeans;
 import org.apache.spark.ml.clustering.KMeansModel;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import plotly.Trace;
+import scala.collection.Seq;
 
 import javax.annotation.Nonnull;
+import java.io.File;
+import java.net.URI;
 import java.util.Map;
 
 import static org.apache.spark.sql.functions.*;
 
 @Component
 @Profile("ml_example")
-public class RecentPurchaseExampleClusterAnalysis extends AbstractMachineLearningService<KMeansModel> {
+public class RecentPurchaseExampleClusterAnalysis extends AbstractMachineLearningServiceImpl<KMeansModel, Seq<Trace>, PlotlySettings> {
 
     @Value("${clusterAnalysisOnRecentPurchaseExample.mySqlJdbcPassword}")
     private String mySqlJdbcPassword;
@@ -131,5 +137,38 @@ public class RecentPurchaseExampleClusterAnalysis extends AbstractMachineLearnin
 
         return jdbcDataset.join(transformedCsvDataset, joinColumn)
                 .select("memberId", "age", "gender", "tier", "skuCategory");
+    }
+
+    @Override
+    public void writeDataset(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    protected Seq<Trace> getPlotData(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) {
+        throw new NotImplementedException();
+    }
+
+    @NotNull
+    @Override
+    protected PlotlySettings getPlotSetting(@NotNull Map<String, ?> parameters) {
+        throw new NotImplementedException();
+    }
+
+    @NotNull
+    @Override
+    protected File plot(@NotNull String path, @NotNull Seq<Trace> plotData, @NotNull PlotlySettings plotSettings) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    protected void savePlotToCloudStorage(@NotNull URI pathAsUri, @NotNull File plot) {
+        throw new NotImplementedException();
+    }
+
+    @NotNull
+    @Override
+    protected String toPlotJson(@NotNull Seq<Trace> plotData, @NotNull PlotlySettings plotSettings) {
+        throw new NotImplementedException();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;

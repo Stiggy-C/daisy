@@ -3,8 +3,10 @@ package io.openenterprise.daisy.examples.ml;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
-import io.openenterprise.daisy.spark.ml.AbstractMachineLearningService;
+import io.openenterprise.daisy.PlotlySettings;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearningServiceImpl;
 import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.hadoop.shaded.com.google.common.collect.Lists;
 import org.apache.spark.ml.clustering.BisectingKMeans;
 import org.apache.spark.ml.clustering.BisectingKMeansModel;
@@ -14,8 +16,12 @@ import org.apache.spark.sql.Row;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import plotly.Trace;
+import scala.collection.Seq;
 
 import javax.annotation.Nonnull;
+import java.io.File;
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,7 +30,7 @@ import static org.apache.spark.sql.functions.count;
 
 @Component
 @Profile("ml_example")
-public class HongKongMark6LotteryResultClusterAnalysis extends AbstractMachineLearningService<BisectingKMeansModel> {
+public class HongKongMark6LotteryResultClusterAnalysis extends AbstractMachineLearningServiceImpl<BisectingKMeansModel, Seq<Trace>, PlotlySettings> {
 
     public HongKongMark6LotteryResultClusterAnalysis() {
         super(BisectingKMeansModel.class);
@@ -57,7 +63,7 @@ public class HongKongMark6LotteryResultClusterAnalysis extends AbstractMachineLe
             throw new IllegalStateException();
         }
 
-        var dataset = loadTable(parameters);
+        var dataset = loadTableOrView(parameters);
 
         var rootJsonNode = objectMapper.readTree(jsonString);
         var jsonNodes = (rootJsonNode.isArray())? IteratorUtils.toList(rootJsonNode.elements())
@@ -157,5 +163,38 @@ public class HongKongMark6LotteryResultClusterAnalysis extends AbstractMachineLe
 
         return union.groupBy("winning_number").sum("count").select(col("winning_number"),
                 col("sum(count)").as("count")).as("dataset");
+    }
+
+    @Override
+    public void writeDataset(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    protected Seq<Trace> getPlotData(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) {
+        throw new NotImplementedException();
+    }
+
+    @NotNull
+    @Override
+    protected PlotlySettings getPlotSetting(@NotNull Map<String, ?> parameters) {
+        throw new NotImplementedException();
+    }
+
+    @NotNull
+    @Override
+    protected File plot(@NotNull String path, @NotNull Seq<Trace> plotData, @NotNull PlotlySettings plotSettings) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    protected void savePlotToCloudStorage(@NotNull URI pathAsUri, @NotNull File plot) {
+        throw new NotImplementedException();
+    }
+
+    @NotNull
+    @Override
+    protected String toPlotJson(@NotNull Seq<Trace> plotData, @NotNull PlotlySettings plotSettings) {
+        throw new NotImplementedException();
     }
 }

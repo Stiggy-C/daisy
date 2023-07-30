@@ -41,4 +41,4 @@ RUN chmod 664 /opt/bitnami/spark/jars/spring-*.jar
 WORKDIR /opt/bitnami/spark
 ENTRYPOINT [ "/opt/bitnami/scripts/spark/entrypoint.sh" ]
 
-CMD /opt/bitnami/spark/sbin/start-master.sh | /opt/bitnami/spark/sbin/start-worker.sh spark://$(hostname):7077
+CMD /opt/bitnami/spark/sbin/start-master.sh | /opt/bitnami/spark/sbin/start-worker.sh spark://$(hostname):7077 | /opt/bitnami/spark/sbin/start-thriftserver.sh

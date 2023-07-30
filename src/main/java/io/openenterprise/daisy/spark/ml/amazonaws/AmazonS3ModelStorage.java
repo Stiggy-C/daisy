@@ -10,6 +10,7 @@ import org.apache.spark.ml.Transformer;
 import org.apache.spark.ml.util.MLWritable;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.task.SyncTaskExecutor;
 
 import javax.annotation.Nonnull;
@@ -19,6 +20,7 @@ import javax.inject.Named;
 import java.net.URI;
 
 @Named
+@ConditionalOnBean(AmazonS3.class)
 public class AmazonS3ModelStorage implements ModelStorage {
 
     @Inject
@@ -29,8 +31,6 @@ public class AmazonS3ModelStorage implements ModelStorage {
 
     @Value("${daisy.s3.bucket}")
     protected String s3Bucket;
-
-
 
     /**
      * Get the S3 URI of the model which has the given modelId.
@@ -61,7 +61,7 @@ public class AmazonS3ModelStorage implements ModelStorage {
 
     @SneakyThrows
     @Override
-    public <M extends Transformer & MLWritable> URI store(@NotNull M model) {
+    public <M extends Transformer & MLWritable> URI save(@NotNull M model) {
         var s3Uri = getUriOfModel(model.uid());
 
         model.write().overwrite().save(StringUtils.replace(s3Uri.toString(), "s3", "s3a"));

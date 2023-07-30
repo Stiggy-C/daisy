@@ -13,7 +13,8 @@ import java.util.concurrent.TimeoutException;
 /**
  * The base of a streaming data pipeline to be run on an Apache Spark cluster.
  */
-public abstract class AbstractStreamingDatasetService extends AbstractSparkSqlService {
+public abstract class AbstractStreamingDatasetServiceImpl extends AbstractBaseDatasetServiceImpl
+    implements StreamingDatasetService {
 
     /**
      * Run this as a streaming pipeline
@@ -45,13 +46,5 @@ public abstract class AbstractStreamingDatasetService extends AbstractSparkSqlSe
 
     }
 
-    /**
-     * Stream the data of the (aggregated) dataset to desired data source. Need to be filled in by the implementation.
-     *
-     * @param dataset
-     * @param parameters
-     * @return
-     * @throws TimeoutException
-     */
-    protected abstract StreamingQuery writeDataset(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) throws TimeoutException;
+    public abstract StreamingQuery writeDataset(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) throws TimeoutException;
 }

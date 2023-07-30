@@ -1,9 +1,11 @@
 package io.openenterprise.daisy.spark.sql;
 
-import io.openenterprise.daisy.spark.Constants;
+import io.openenterprise.daisy.Constants;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.sql.*;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,10 +13,7 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * The base of all Apache Spark operations.
- */
-public abstract class AbstractSparkSqlService {
+public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetService {
 
     @Inject
     protected SparkSession sparkSession;
@@ -123,10 +122,13 @@ public abstract class AbstractSparkSqlService {
     }
 
     @Nonnull
-    protected Dataset<Row> loadTable(@Nonnull Map<String, ?> parameters) {
-        return isExternalDeltaTable(parameters) ?
-                sparkSession.read().format("delta").option("path", getPath(parameters)).load() :
-                sparkSession.table(getTableName(parameters));
+    protected String getBeanName() {
+        var componentAnnotation = getClass().getAnnotation(Component.class);
+        var serviceAnnotation = getClass().getAnnotation(Service.class);
+
+        return Objects.nonNull(componentAnnotation)? componentAnnotation.value() :
+                Objects.nonNull(serviceAnnotation) ? serviceAnnotation.value() :
+                        StringUtils.uncapitalize(getClass().getSimpleName());
     }
 
     @Nonnull
@@ -202,6 +204,12 @@ public abstract class AbstractSparkSqlService {
         return StringUtils.equals("delta", format) && StringUtils.isNotEmpty(path);
     }
 
+    @Nonnull
+    protected Dataset<Row> loadTableOrView(@Nonnull Map<String, ?> parameters) {
+        return isExternalDeltaTable(parameters) ?
+                sparkSession.read().format("delta").option("path", getPath(parameters)).load() :
+                sparkSession.table(getTableName(parameters));
+    }
 
     protected boolean tableOrViewExists(@Nonnull String tableOrViewName) {
         return sparkSession.catalog().tableExists(tableOrViewName);
