@@ -20,7 +20,8 @@ AWSCloudGroup(cloud) {
 
     RegionGroup(region0, "Tokyo") {
 
-        SimpleStorageServiceBucketWithObjects(s3Bucket0, "Delta lake storage", "")
+        SimpleStorageServiceBucketWithObjects(s3Bucket0, "Check points storage", "")
+        SimpleStorageServiceBucketWithObjects(s3Bucket1, "Delta lake storage", "")
 
         VPCGroup(vpcTokyo0) {
 
@@ -45,6 +46,7 @@ AWSCloudGroup(cloud) {
         sparkMaster <--> sparkWorker1
         sparkMaster <--> sparkWorker0
         sparkMaster <-right-> s3Bucket0
+        sparkMaster <-left-> s3Bucket1
 
         VPCGroup(vpcTokyo1) {
 

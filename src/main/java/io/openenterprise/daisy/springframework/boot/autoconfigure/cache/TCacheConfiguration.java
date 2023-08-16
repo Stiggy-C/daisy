@@ -2,7 +2,7 @@ package io.openenterprise.daisy.springframework.boot.autoconfigure.cache;
 
 import com.trivago.triava.tcache.EvictionPolicy;
 import com.trivago.triava.tcache.core.Builder;
-import io.openenterprise.daisy.spark.ExpressionService;
+import io.openenterprise.daisy.spark.MvelExpressionService;
 import org.apache.spark.ml.Transformer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +16,10 @@ import javax.cache.Caching;
 public class TCacheConfiguration {
 
     @Bean
-    protected Cache<String, ExpressionService.Session> expressionServiceSessionsCache() {
+    protected Cache<String, MvelExpressionService.Session> expressionServiceSessionsCache() {
         var cachingProvider = Caching.getCachingProvider();
         var cacheManager = cachingProvider.getCacheManager();
-        var builder = new Builder<String, ExpressionService.Session>()
+        var builder = new Builder<String, MvelExpressionService.Session>()
                 .setEvictionPolicy(EvictionPolicy.LFU);
 
         return cacheManager.createCache("expressionServiceSessionsCache", builder);

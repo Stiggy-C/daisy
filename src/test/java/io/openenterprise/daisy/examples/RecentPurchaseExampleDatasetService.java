@@ -3,12 +3,13 @@ package io.openenterprise.daisy.examples;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3URI;
 import com.google.common.collect.Lists;
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import io.openenterprise.daisy.PlotlySettings;
 import io.openenterprise.daisy.spark.sql.AbstractPlotGeneratingDatasetServiceImpl;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.functions;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -108,7 +109,7 @@ public class RecentPurchaseExampleDatasetService extends AbstractPlotGeneratingD
                 .map(row -> row.get(row.fieldIndex("count"))).collect(Collectors.toList());
         var subPlot0ValueSeq = Sequence.fromLongSeq(JavaConverters.asScalaBuffer(subPlot0Value).toSeq());
 
-        var bar0 = new Bar(subPlot0LabelSeq, subPlot0ValueSeq);
+        var bar0 = new Bar(subPlot0LabelSeq, subPlot0ValueSeq).withName("SKU categories ranking");
 
         // SKU ID bubble chart:
         var subPlot1Dataset = dataset.select("skuCategory", "skuPrice").groupBy("skuCategory")
@@ -121,7 +122,7 @@ public class RecentPurchaseExampleDatasetService extends AbstractPlotGeneratingD
                 .map(row -> row.get(row.fieldIndex("maxPrice"))).collect(Collectors.toList());
         var subPlot1ValueSeq = Sequence.fromDoubleSeq(JavaConverters.asScalaBuffer(subPlot1Value).toSeq());
 
-        var bar1 = new Bar(subPlot1LabelSeq, subPlot1ValueSeq);
+        var bar1 = new Bar(subPlot1LabelSeq, subPlot1ValueSeq).withName("Max price of each SKU category");
 
         var traces = Lists.<Trace>newArrayList(bar0, bar1);
 
@@ -136,7 +137,7 @@ public class RecentPurchaseExampleDatasetService extends AbstractPlotGeneratingD
         var config = new Config().withEditable(false).withResponsive(true);
         var grid = new Grid().withColumns(2).withRows(1);
         var layout = new Layout().withGrid(grid).withTitle(MapUtils.getString(parameters,
-                Constants.PLOT_TITLE_PARAMETER_NAME.getValue(), getBeanName()));
+                Parameters.PLOT_TITLE.getName(), getBeanName()));
 
         plotlySettings.setConfig(config);
         plotlySettings.setLayout(layout);

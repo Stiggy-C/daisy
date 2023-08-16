@@ -2,7 +2,7 @@ package io.openenterprise.daisy.spark.sql;
 
 import com.google.common.collect.ImmutableMap;
 import io.openenterprise.daisy.examples.AbstractTest;
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ class SqlStatementServiceTest extends AbstractTest {
 
     @Test
     void testBuildDataset() {
-        var parameters = ImmutableMap.of(Constants.SQL_STATEMENT_PARAMETER_NAME.getValue(), SQL);
+        var parameters = ImmutableMap.of(Parameters.DATASET_SQL_STATEMENT.getName(), SQL);
         var dataset = sqlStatementService.buildDataset(parameters);
 
         assertNotNull(dataset);

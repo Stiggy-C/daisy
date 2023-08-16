@@ -28,7 +28,7 @@ Updates history of Daisy can be accessed from [here](updates_history.md).
   * Keeping it simple & stupid and does not require a rocket scientist to work with Daisy.
 
 ## High level design
-Daisy provides 6 components to be extended by data engineers & software engineers. In a way, the implementation of them 
+Daisy provides 8 components to be extended by data engineers & software engineers. In a way, the implementation of them 
 can be viewed as a notebook in Databricks or Jupyter Notebook.
 
 ![Class diagram](docs/daisy_class_diagram.png)

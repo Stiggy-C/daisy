@@ -20,6 +20,7 @@
 		<hadoop.version>3.3.4</hadoop.version>
 		<mysql-connectorj.version>8.0.32</mysql-connectorj.version>
 		<janino.version>3.0.16</janino.version>
+		<mvel.version>2.5.0.Final</mvel.version>
 		<ploty.version>0.8.4</ploty.version>
 		<pmml4s-spark.version>0.9.16</pmml4s-spark.version>
 		<postgresql-jdbc.version>42.6.0</postgresql-jdbc.version>
@@ -169,6 +170,11 @@
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
 			<version>${janino.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mvel</groupId>
+			<artifactId>mvel2</artifactId>
+			<version>${mvel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.plotly-scala</groupId>

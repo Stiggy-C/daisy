@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.spark.sql;
 
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.spark.sql.AnalysisException;
@@ -26,7 +26,7 @@ public class SqlStatementService extends AbstractBaseDatasetServiceImpl {
     @Override
     public Dataset<Row> buildDataset(@NotNull Map<String, ?> parameters) {
         var sql = ObjectUtils.requireNonEmpty(MapUtils.getString(parameters,
-                        Constants.SQL_STATEMENT_PARAMETER_NAME.getValue()), "SQL statement is empty");
+                        Parameters.DATASET_SQL_STATEMENT.getName()), "SQL statement is empty");
 
         return sparkSession.sql(sql);
     }

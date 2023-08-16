@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.spark.sql;
 
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.sql.*;
@@ -142,7 +142,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
 
     @Nullable
     protected String getFormat(@Nonnull Map<String, ?> parameters, @Nullable String defaultValue) {
-        return MapUtils.getString(parameters, Constants.FORMAT_PARAMETER_NAME.getValue(), defaultValue);
+        return MapUtils.getString(parameters, Parameters.DATASET_FORMAT.getName(), defaultValue);
     }
 
     @Nonnull
@@ -150,7 +150,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
         var path = getPath(parameters, null);
 
         if (StringUtils.isEmpty(path)) {
-            throw new IllegalArgumentException(Constants.PATH_PARAMETER_NAME.getValue() + " is missing");
+            throw new IllegalArgumentException(Parameters.DATASET_PATH.getName() + " is missing");
         }
 
         return path;
@@ -158,7 +158,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
 
     @Nullable
     protected String getPath(@Nonnull Map<String, ?> parameters, @Nullable String defaultValue) {
-        return MapUtils.getString(parameters, Constants.PATH_PARAMETER_NAME.getValue(), defaultValue);
+        return MapUtils.getString(parameters, Parameters.DATASET_PATH.getName(), defaultValue);
     }
 
     @Nonnull
@@ -167,7 +167,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
                 this.getClass().getSimpleName()));
 
         if (StringUtils.isEmpty(tableName)) {
-            throw new IllegalArgumentException(Constants.TABLE_NAME_PARAMETER_NAME.getValue() + " is missing");
+            throw new IllegalArgumentException(Parameters.DATASET_TABLE.getName() + " is missing");
         }
 
         return tableName;
@@ -175,7 +175,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
 
     @Nullable
     protected String getTableName(@Nonnull Map<String, ?> parameters, @Nullable String defaultValue) {
-        return MapUtils.getString(parameters, Constants.TABLE_NAME_PARAMETER_NAME.getValue(), defaultValue);
+        return MapUtils.getString(parameters, Parameters.DATASET_TABLE.getName(), defaultValue);
     }
 
     @Nonnull
@@ -184,7 +184,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
                 this.getClass().getSimpleName()));
 
         if (StringUtils.isEmpty(viewName)) {
-            throw new IllegalArgumentException(Constants.VIEW_NAME_PARAMETER_NAME.getValue() + " is missing");
+            throw new IllegalArgumentException(Parameters.DATASET_VIEW.getName() + " is missing");
         }
 
         return viewName;
@@ -192,7 +192,7 @@ public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetServi
 
     @Nullable
     protected String getViewName(@Nonnull Map<String, ?> parameters, @Nullable String defaultValue) {
-        return MapUtils.getString(parameters, Constants.VIEW_NAME_PARAMETER_NAME.getValue(), defaultValue);
+        return MapUtils.getString(parameters, Parameters.DATASET_VIEW.getName(), defaultValue);
     }
 
     protected boolean isExternalDeltaTable(@Nonnull Map<String, ?> parameters) {

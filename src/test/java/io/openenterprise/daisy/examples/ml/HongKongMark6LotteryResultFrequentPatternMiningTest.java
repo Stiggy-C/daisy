@@ -1,7 +1,7 @@
 package io.openenterprise.daisy.examples.ml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import io.openenterprise.daisy.spark.ml.amazonaws.AmazonS3ModelStorage;
 import io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference;
 import org.apache.hadoop.shaded.com.google.common.collect.ImmutableMap;
@@ -37,8 +37,8 @@ class HongKongMark6LotteryResultFrequentPatternMiningTest extends AbstractTest {
     public void test() throws JsonProcessingException, AnalysisException {
         var parameters = ImmutableMap.of(
                 "csvS3Uri", "s3a://" + TEST_S3_BUCKET + "/csv_files/hk_mark_6_results.csv",
-                Constants.FORMAT_PARAMETER_NAME.getValue(), "delta",
-                Constants.PATH_PARAMETER_NAME.getValue(), "s3a://" + TEST_S3_BUCKET + "/delta_lake/hongKongMark6LotteryResultFrequentPatternMining");
+                Parameters.DATASET_FORMAT.getName(), "delta",
+                Parameters.DATASET_PATH.getName(), "s3a://" + TEST_S3_BUCKET + "/delta_lake/hongKongMark6LotteryResultFrequentPatternMining");
 
         var dataset = hongKongMark6LotteryResultFrequentPatternMining.buildDataset(parameters,
                 CreateTableOrViewPreference.CREATE_TABLE_OVERWRITE);

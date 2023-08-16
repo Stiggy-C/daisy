@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.spark.sql;
 
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import io.openenterprise.daisy.PlotSettings;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,10 +59,10 @@ public abstract class AbstractPlotGeneratingDatasetServiceImpl<PD, PS extends Pl
 
     @Nonnull
     protected String getPlotPath(@Nonnull Map<String, ?> parameters) {
-        var path = MapUtils.getString(parameters, Constants.PLOT_PATH_PARAMETER_NAME.getValue());
+        var path = MapUtils.getString(parameters, Parameters.PLOT_PATH.getName());
 
         if (StringUtils.isEmpty(path)) {
-            throw new IllegalArgumentException(Constants.PLOT_PATH_PARAMETER_NAME + " is empty");
+            throw new IllegalArgumentException(Parameters.PLOT_PATH + " is empty");
         }
 
         return path;

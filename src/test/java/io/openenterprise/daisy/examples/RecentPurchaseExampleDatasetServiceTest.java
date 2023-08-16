@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.examples;
 
-import io.openenterprise.daisy.Constants;
+import io.openenterprise.daisy.Parameters;
 import io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference;
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.sql.AnalysisException;
@@ -72,7 +72,7 @@ class RecentPurchaseExampleDatasetServiceTest extends AbstractTest {
 
         var s3ObjectName = "plots/recentPurchaseExamplePipeline_" + Instant.now().toEpochMilli() + ".html";
 
-        recentPurchaseExamplePipeline.plot(dataset, Map.of(Constants.PLOT_PATH_PARAMETER_NAME.getValue(), "s3://"
+        recentPurchaseExamplePipeline.plot(dataset, Map.of(Parameters.PLOT_PATH.getName(), "s3://"
                 + TEST_S3_BUCKET + "/" + s3ObjectName));
 
         assertTrue(amazonS3.doesObjectExist(TEST_S3_BUCKET, s3ObjectName));

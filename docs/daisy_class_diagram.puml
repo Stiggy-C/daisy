@@ -37,7 +37,6 @@ package "io.openenterprise.daisy.spark.sql" {
     }
 
     interface BaseDatasetService {
-        +Dataset<Row> buildDataset(Map<String, ?>, CreateTableOrViewPreference)
         +Dataset<Row> buildDataset(Map<String, ?>): Dataset<Row>
     }
 
@@ -45,20 +44,31 @@ package "io.openenterprise.daisy.spark.sql" {
         +void writeDataset(Dataset<Row> dataset, Map<String, ?>)
     }
 
+    interface MvelDatasetService {}
+
     interface PlotGeneratingDatasetService {
         +void plot(Dataset<Row> dataset, Map<String, ?>)
         +String toPlotJson(Dataset<Row>, Map<String, ?>)
     }
 
+    interface MvelPlotGeneratingDatasetService {}
+
     interface StreamingDatasetService {
+        +StreamingQuery streamingPipeline(Map<String, ?>)
         +StreamingQuery writeDataset(Dataset<Row>, Map<String, ?>)
     }
 
+    interface MvelStreamingDatasetService {}
+
     BaseDatasetService <|-- DatasetService
     BaseDatasetService <|-- StreamingDatasetService
+    DatasetService <|-- MvelDatasetService
     DatasetService <|-- PlotGeneratingDatasetService
+    PlotGeneratingDatasetService <|-- MvelPlotGeneratingDatasetService
+    StreamingDatasetService <|-- MvelStreamingDatasetService
 
     abstract class AbstractBaseDatasetServiceImpl {
+        +Dataset<Row> buildDataset(Map<String, ?>, CreateTableOrViewPreference)
         #void createTable(Dataset<Row>, String tableOrViewName, String, String, CreateTableOrViewPreference)
         #void createView(Dataset<Row>, String, CreateTableOrViewPreference)
         #String getFormat(Map<String, ?>)
@@ -85,6 +95,22 @@ package "io.openenterprise.daisy.spark.sql" {
     AbstractBaseDatasetServiceImpl <|-- AbstractDatasetServiceImpl
     DatasetService <|-- AbstractDatasetServiceImpl
 
+    abstract class AbstractMvelDatasetServiceImpl {
+        #String[] buildDatasetExpressions
+        #String[] pipelineExpressions
+        #String[] writeDatasetExpressions
+    }
+
+    MvelDatasetService <|-- AbstractMvelDatasetServiceImpl
+
+    abstract class AbstractMvelPlotGeneratingDatasetServiceImpl {
+        #String[] plotExpressions
+        #String[] toPlotJsonExpressions
+    }
+
+    AbstractMvelDatasetServiceImpl <|-- AbstractMvelPlotGeneratingDatasetServiceImpl
+    MvelPlotGeneratingDatasetService <|-- AbstractMvelPlotGeneratingDatasetServiceImpl
+
     abstract class AbstractPlotGeneratingDatasetServiceImpl<PD, PS extends PlotSetting> {
         #PD getPlotData(Dataset<Row>, Map<String, ?>)
         #String getPlotPath(Map<String, ?>)
@@ -98,13 +124,20 @@ package "io.openenterprise.daisy.spark.sql" {
     PlotGeneratingDatasetService <|-- AbstractPlotGeneratingDatasetServiceImpl
 
     abstract class AbstractStreamingDatasetServiceImpl {
-        +StreamingQuery streamingPipeline(Map<String, ?>)
         +StreamingQuery streamingPipeline(Map<String, ?>, CreateTableOrViewPreference)
     }
 
     AbstractBaseDatasetServiceImpl <|-- AbstractStreamingDatasetServiceImpl
     StreamingDatasetService <|-- AbstractStreamingDatasetServiceImpl
 
+    abstract class AbstractMvelStreamingDatasetServiceImpl {
+        #String[] buildDatasetExpressions
+        #String[] pipelineExpressions
+        #String[] writeDatasetExpressions
+        #StreamingQuery createStreamingQuery(String[], Map<String, ?>)
+    }
+
+    MvelStreamingDatasetService <|-- AbstractMvelStreamingDatasetServiceImpl
 }
 package "io.openenterprise.daisy.spark.ml" {
 
