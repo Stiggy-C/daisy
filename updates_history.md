@@ -3,7 +3,8 @@
   * Removed ExpressionService and replaced with [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
     as MVEL offer more flexibility over SpEL.
   * Added [AbstractMvelDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetServiceImpl.java),
-    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/test/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
+    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/main/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
+    and [AbstractMvelStreamingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelStreamingDatasetServiceImpl.java)
     which makes use of [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
     * See [RecentPurchaseExampleMvelDatasetService](src/test/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetService.java) for usage
 
