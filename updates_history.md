@@ -3,10 +3,11 @@
   * Removed ExpressionService and replaced with [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
     as MVEL offer more flexibility over SpEL.
   * Added [AbstractMvelDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetServiceImpl.java),
-    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/main/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
+    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
     and [AbstractMvelStreamingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelStreamingDatasetServiceImpl.java)
     which makes use of [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
-    * See [RecentPurchaseExampleMvelDatasetService](src/test/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetService.java) for usage
+    * See [RecentPurchaseExampleMvelDatasetService](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetService.java) and
+      [RecentPurchaseExampleMvelDatasetServiceTest.java](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetServiceTest.java) for usage
 
 ### 2023-07-29
 * plotly-scala integration.
