@@ -3,15 +3,15 @@
   * Removed ExpressionService and replaced with [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
     as MVEL offer more flexibility over SpEL.
   * Added [AbstractMvelDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetServiceImpl.java),
-    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
+    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/test/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
     which makes use of [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
-    * See [RecentPurchaseExampleMvelDatasetService](src/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetService.java) for usage
+    * See [RecentPurchaseExampleMvelDatasetService](src/test/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetService.java) for usage
 
 ### 2023-07-29
 * plotly-scala integration.
     * Added [AbstractPlotGeneratingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetServiceImpl.java)
       which allows plotting of the resulting Dataset
-        * [RecentPurchaseExampleDatasetService](io.openenterprise.daisy.examples.RecentPurchaseExampleDatasetService) has
+        * [RecentPurchaseExampleDatasetService](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java) has
           been updated to showcase the integration
 
 ### 2023-07-15
