@@ -31,14 +31,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"spring.profiles.active=local_spark,pipeline_example"})
-class RecentPurchaseExampleDatasetServiceTest extends AbstractTest {
+class RecentPurchaseExampleDatasetComponentTest extends AbstractTest {
 
     @Autowired
     @Qualifier("postgresDatasource")
     protected DataSource dataSource;
 
     @Autowired
-    protected RecentPurchaseExampleDatasetService recentPurchaseExamplePipeline;
+    protected RecentPurchaseExampleDatasetComponent recentPurchaseExamplePipeline;
 
     @Test
     public void test() throws AnalysisException, IOException {
@@ -102,8 +102,8 @@ class RecentPurchaseExampleDatasetServiceTest extends AbstractTest {
         protected PostgreSQLContainer postgreSQLContainer;
 
         @Bean
-        protected RecentPurchaseExampleDatasetService recentPurchaseExamplePipeline() {
-            return new RecentPurchaseExampleDatasetService();
+        protected RecentPurchaseExampleDatasetComponent recentPurchaseExamplePipeline() {
+            return new RecentPurchaseExampleDatasetComponent();
         }
 
         @PostConstruct
@@ -117,7 +117,7 @@ class RecentPurchaseExampleDatasetServiceTest extends AbstractTest {
             properties.setProperty("recentPurchaseExamplePipeline.postgresJdbcUser", postgreSQLContainer.getUsername());
 
             ((ConfigurableEnvironment) environment).getPropertySources()
-                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleDatasetService.class.getName(), properties));
+                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleDatasetComponent.class.getName(), properties));
         }
     }
 }

@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-public interface StreamingDatasetService extends BaseDatasetService {
+public interface StreamingDatasetComponent extends BaseDatasetComponent {
 
     /**
      * Run this as a streaming pipeline
@@ -32,4 +32,4 @@ public interface StreamingDatasetService extends BaseDatasetService {
     StreamingQuery writeDataset(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters) throws TimeoutException;
 }
 
-interface MvelStreamingDatasetService extends StreamingDatasetService {}
+interface MvelStreamingDatasetComponent extends StreamingDatasetComponent {}

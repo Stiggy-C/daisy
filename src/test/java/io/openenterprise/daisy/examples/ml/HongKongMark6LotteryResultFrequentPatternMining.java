@@ -2,7 +2,7 @@ package io.openenterprise.daisy.examples.ml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.openenterprise.daisy.PlotlySettings;
-import io.openenterprise.daisy.spark.ml.AbstractMachineLearningServiceImpl;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearningComponentImpl;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.spark.ml.fpm.FPGrowth;
 import org.apache.spark.ml.fpm.FPGrowthModel;
@@ -22,7 +22,7 @@ import static org.apache.spark.sql.functions.*;
 
 @Component
 @Profile("ml_example")
-public class HongKongMark6LotteryResultFrequentPatternMining extends AbstractMachineLearningServiceImpl<FPGrowthModel, Seq<Trace>, PlotlySettings> {
+public class HongKongMark6LotteryResultFrequentPatternMining extends AbstractMachineLearningComponentImpl<FPGrowthModel, Seq<Trace>, PlotlySettings> {
 
     protected HongKongMark6LotteryResultFrequentPatternMining() {
         super(FPGrowthModel.class);

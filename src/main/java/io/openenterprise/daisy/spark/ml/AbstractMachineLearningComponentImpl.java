@@ -3,8 +3,7 @@ package io.openenterprise.daisy.spark.ml;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.openenterprise.daisy.PlotSettings;
-import io.openenterprise.daisy.spark.sql.AbstractDatasetServiceImpl;
-import io.openenterprise.daisy.spark.sql.AbstractPlotGeneratingDatasetServiceImpl;
+import io.openenterprise.daisy.spark.sql.AbstractPlotGeneratingDatasetComponentImpl;
 import io.openenterprise.daisy.springframework.spark.convert.JsonNodeToDatasetConverter;
 import lombok.Getter;
 import org.apache.spark.ml.Transformer;
@@ -24,8 +23,8 @@ import java.util.Map;
  *
  * @param <M>
  */
-public abstract class AbstractMachineLearningServiceImpl<M extends Transformer & MLWritable, PD, PS extends PlotSettings>
-        extends AbstractPlotGeneratingDatasetServiceImpl<PD, PS> implements MachineLearningService<M> {
+public abstract class AbstractMachineLearningComponentImpl<M extends Transformer & MLWritable, PD, PS extends PlotSettings>
+        extends AbstractPlotGeneratingDatasetComponentImpl<PD, PS> implements MachineLearningService<M> {
 
     @Inject
     protected JsonNodeToDatasetConverter jsonNodeToDatasetConverter;
@@ -40,7 +39,7 @@ public abstract class AbstractMachineLearningServiceImpl<M extends Transformer &
     @Inject
     protected ObjectMapper objectMapper;
 
-    protected AbstractMachineLearningServiceImpl(@Nonnull Class<M> modelClass) {
+    protected AbstractMachineLearningComponentImpl(@Nonnull Class<M> modelClass) {
         this.modelClass = modelClass;
     }
 

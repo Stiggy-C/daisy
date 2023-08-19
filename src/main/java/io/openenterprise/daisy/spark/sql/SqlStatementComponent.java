@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class SqlStatementService extends AbstractBaseDatasetServiceImpl {
+public class SqlStatementComponent extends AbstractBaseDatasetComponentImpl {
 
     @NotNull
     @Override

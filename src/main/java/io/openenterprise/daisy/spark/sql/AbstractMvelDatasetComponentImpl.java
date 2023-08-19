@@ -17,9 +17,9 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Map;
 
-public abstract class AbstractMvelDatasetServiceImpl implements MvelDatasetService {
+public abstract class AbstractMvelDatasetComponentImpl implements MvelDatasetComponent {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(MvelDatasetService.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(MvelDatasetComponent.class);
 
     protected String[] buildDatasetExpressions;
 

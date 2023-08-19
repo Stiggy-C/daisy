@@ -13,8 +13,8 @@ import java.util.Objects;
 /**
  * The base of a data pipeline to be run on an Apache Spark cluster.
  */
-public abstract class AbstractDatasetServiceImpl extends AbstractBaseDatasetServiceImpl
-        implements DatasetService {
+public abstract class AbstractDatasetComponentImpl extends AbstractBaseDatasetComponentImpl
+        implements DatasetComponent {
 
     /**
      * Run this as a pipeline

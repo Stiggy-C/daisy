@@ -1,4 +1,4 @@
-### [AbstractBaseDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractBaseDatasetServiceImpl.java)
+### [AbstractBaseDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractBaseDatasetComponentImpl.java)
 This class is the base of other dataset related classes in Daisy. Necessary methods to build (Spark) dataset and to
 create a (Spark) table/view are implemented in this class. It also defines the (abstract) methods which need to be
 implemented when extending this class.
@@ -13,8 +13,8 @@ The following abstract methods are defined in this class and must be implemented
 
 * buildDataset(java.util.Map<java.lang.String,?>) (Custom logic to build the desired dataset from data sources goes here.)
 
-### [AbstractDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractDatasetServiceImpl.java)
-This class add on top of AbstractBaseDatasetServiceImpl to provide the ability to write the built dataset to desired
+### [AbstractDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractDatasetComponentImpl.java)
+This class add on top of AbstractBaseDatasetComponentImpl to provide the ability to write the built dataset to desired
 data sink. It also provides methods to run as a data pipeline. The following methods need to be implemented when
 extending this class,
 
@@ -23,31 +23,28 @@ extending this class,
 * pipeline(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference)
 * writeDataset(org.apache.spark.sql.Dataset<Row>, java.util.Map<java.lang.String,?>)
 
-[RecentPurchaseExampleDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java)
+[RecentPurchaseExampleDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponent.java)
 is an example implementation of this class. It reads the transactions in a CSV files stored in a S3 bucket to be aggregated
 with the membership table in a MySQL database and write the results into a PostgreSQL database.
 
-Usage of this class can be seen from [RecentPurchaseExampleDatasetServiceTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetServiceTest.java)
+Usage of this class can be seen from [RecentPurchaseExampleDatasetComponentTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponentTest.java)
 
-### [AbstractStreamingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractStreamingDatasetServiceImpl.java)
-This class is the streaming counter part of [AbstractDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractDatasetServiceImpl.java).
-It has methods to read & write from/to streaming data sources/sink and methods to run as a streaming data pipeline. The
-following methods need to be implemented when extending this class,
+### [AbstractMvelDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java)
+allows MVEL based expressions to be injected (by Spring Boot) to build dataset, write dataset or run as pipeline
 
-* buildDataset(java.util.Map<java.lang.String,?>)
-* streamingPipeline(java.util.Map<java.lang.String,?>)
-* streamingPipeline(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference)
-* writeDataset(org.apache.spark.sql.Dataset<Row>, java.util.Map<java.lang.String,?>)
+### [AbstractMvelPlotGeneratingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetComponentImpl.java)
+is an extension of [AbstractMvelDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java) which add
+the ability to generate plot powered by Plotly or JSON to be used with Plotly by the injected MVEL based expressions.
 
-[RecentPurchaseExampleStreamingDatasetService.java](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetService.java)
-is an example implementation of this class. It is the streaming version of
-[RecentPurchaseExampleDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java)
+[RecentPurchaseExampleMvelDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetComponent.java) is an 
+example of this. Expressions in [recentPurchaseExampleMvelPipeline.yaml](src/test/resources/recentPurchaseExampleMvelPipeline.yaml) are injected
+and make used to build dataset, build JSON for Plotly, build Plotly plot, write dataset and even run as a pipeline.
 
-Usage of this class can be seen from
-[RecentPurchaseExampleStreamingDatasetServiceTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetServiceTest.java)
+### [AbstractMvelStreamingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractStreamingDatasetComponentImpl.java) allows
+MVEL expressions to be injected by Spring Boot to build (streaming) dataset, stream dataset to sink and even run as a pipeline.
 
-### [AbstractPlotGeneratingDatasetServiceImpl](io/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetServiceImpl.java)
-Extending AbstractDatasetServiceImpl, this class add integration with plotly-scala to generate plotly JS powered plot in
+### [AbstractPlotGeneratingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetComponentImpl.java)
+Extending AbstractDatasetComponentImpl, this class add integration with plotly-scala to generate plotly JS powered plot in
 a html file or generate the JSON to be used by plotly JS. The following methods need to be implemented when extending
 this class,
 
@@ -57,10 +54,27 @@ this class,
 * savePlotToCloudStorage(java.net.URI, java.io.File)
 * <PD, PS extends io.openenterprise.daisy.PlotSettings>toPlotJson(PD, PS)
 
-[RecentPurchaseExampleDatasetService](src/main/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java)
+[RecentPurchaseExampleDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponent.java)
 is an example implementation of this class.
 
-### [AbstractMachineLearningServiceImpl](src/main/java/io/openenterprise/daisy/spark/ml/AbstractMachineLearningServiceImpl.java)
+### [AbstractStreamingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractStreamingDatasetComponentImpl.java)
+This class is the streaming counter part of [AbstractDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractDatasetComponentImpl.java).
+It has methods to read & write from/to streaming data sources/sink and methods to run as a streaming data pipeline. The
+following methods need to be implemented when extending this class,
+
+* buildDataset(java.util.Map<java.lang.String,?>)
+* streamingPipeline(java.util.Map<java.lang.String,?>)
+* streamingPipeline(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference)
+* writeDataset(org.apache.spark.sql.Dataset<Row>, java.util.Map<java.lang.String,?>)
+
+[RecentPurchaseExampleStreamingDatasetComponent.java](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetComponent.java)
+is an example implementation of this class. It is the streaming version of
+[RecentPurchaseExampleDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponent.java)
+
+Usage of this class can be seen from
+[RecentPurchaseExampleStreamingDatasetComponentTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetComponentTest.java)
+
+### [AbstractMachineLearningServiceImpl](src/main/java/io/openenterprise/daisy/spark/ml/AbstractMachineLearningComponentImpl.java)
 This class contains the foundation of machine learning workflow running on an Apache Spark cluster. Spark engineers
 just need to extend this class and fill in the following methods to build/train machine learning model, store the built
 model to both cloud & local storage and use the built/trained model to get a prediction,
@@ -70,7 +84,7 @@ model to both cloud & local storage and use the built/trained model to get a pre
 * buildModel(org.apache.spark.sql.Dataset<org.apache.spark.sql.Row>, java.util.Map<java.lang.String,?>)
 * predict(String, String, Map<String, ?>, ModelStorage)
 
-[ClusterAnalysisOnRecentPurchaseExample](src/main/java/io/openenterprise/daisy/examples/ml/ClusterAnalysisOnRecentPurchaseExample.java)
+[ClusterAnalysisOnRecentPurchaseExample](src/test/java/io/openenterprise/daisy/examples/ml/HongKongMark6LotteryResultClusterAnalysis.java)
 is an example implementation of this class. It will read (fake) sales transactions in a CSV files which is stored in a S3
 bucket to be aggregated with the membership table in a MySQL database. Aggregated data will be massaged to be used to
 build a ML model to get a prediction on user input.

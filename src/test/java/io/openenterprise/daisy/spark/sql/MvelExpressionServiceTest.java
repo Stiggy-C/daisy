@@ -109,8 +109,8 @@ public class MvelExpressionServiceTest extends AbstractTest {
 
         @Bean("datasetServicesMap")
         @Order
-        protected Map<String, BaseDatasetService> datasetServiceMap(@Nonnull ApplicationContext applicationContext) {
-            return applicationContext.getBeansOfType(BaseDatasetService.class);
+        protected Map<String, BaseDatasetComponent> datasetServiceMap(@Nonnull ApplicationContext applicationContext) {
+            return applicationContext.getBeansOfType(BaseDatasetComponent.class);
         }
 
         @Bean

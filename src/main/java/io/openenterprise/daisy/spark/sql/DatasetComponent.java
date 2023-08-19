@@ -7,7 +7,7 @@ import org.apache.spark.sql.Row;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public interface DatasetService extends BaseDatasetService {
+public interface DatasetComponent extends BaseDatasetComponent {
 
     void pipeline(@Nonnull Map<String, ?> parameters) throws AnalysisException;
 
@@ -15,6 +15,6 @@ public interface DatasetService extends BaseDatasetService {
 
 }
 
-interface MvelDatasetService extends DatasetService {}
+interface MvelDatasetComponent extends DatasetComponent {}
 
 

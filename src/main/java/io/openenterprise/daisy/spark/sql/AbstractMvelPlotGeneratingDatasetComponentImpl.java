@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public abstract class AbstractMvelPlotGeneratingDatasetServiceImpl extends AbstractMvelDatasetServiceImpl
-        implements MvelPlotGeneratingDatasetService {
+public abstract class AbstractMvelPlotGeneratingDatasetComponentImpl extends AbstractMvelDatasetComponentImpl
+        implements MvelPlotGeneratingDatasetComponent {
 
     protected String[] plotExpressions;
 

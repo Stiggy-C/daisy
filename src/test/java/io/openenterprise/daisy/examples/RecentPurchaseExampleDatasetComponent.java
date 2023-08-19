@@ -5,11 +5,10 @@ import com.amazonaws.services.s3.AmazonS3URI;
 import com.google.common.collect.Lists;
 import io.openenterprise.daisy.Parameters;
 import io.openenterprise.daisy.PlotlySettings;
-import io.openenterprise.daisy.spark.sql.AbstractPlotGeneratingDatasetServiceImpl;
+import io.openenterprise.daisy.spark.sql.AbstractPlotGeneratingDatasetComponentImpl;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.functions;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -34,7 +33,7 @@ import static org.apache.spark.sql.functions.max;
 @Component("recentPurchaseExamplePipeline")
 @ConditionalOnBean(AmazonS3.class)
 @Profile("pipeline_example")
-public class RecentPurchaseExampleDatasetService extends AbstractPlotGeneratingDatasetServiceImpl<Seq<Trace>, PlotlySettings> {
+public class RecentPurchaseExampleDatasetComponent extends AbstractPlotGeneratingDatasetComponentImpl<Seq<Trace>, PlotlySettings> {
 
     @Inject
     private AmazonS3 amazonS3;

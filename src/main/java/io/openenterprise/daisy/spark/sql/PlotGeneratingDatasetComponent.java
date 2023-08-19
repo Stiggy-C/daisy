@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public interface PlotGeneratingDatasetService extends DatasetService {
+public interface PlotGeneratingDatasetComponent extends DatasetComponent {
 
     void plot(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters);
 
@@ -15,4 +15,4 @@ public interface PlotGeneratingDatasetService extends DatasetService {
     String toPlotJson(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, ?> parameters);
 }
 
-interface MvelPlotGeneratingDatasetService extends PlotGeneratingDatasetService {}
+interface MvelPlotGeneratingDatasetComponent extends PlotGeneratingDatasetComponent {}

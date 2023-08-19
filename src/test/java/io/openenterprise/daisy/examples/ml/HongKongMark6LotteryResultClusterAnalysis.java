@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import io.openenterprise.daisy.PlotlySettings;
-import io.openenterprise.daisy.spark.ml.AbstractMachineLearningServiceImpl;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearningComponentImpl;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.hadoop.shaded.com.google.common.collect.Lists;
@@ -30,7 +30,7 @@ import static org.apache.spark.sql.functions.count;
 
 @Component
 @Profile("ml_example")
-public class HongKongMark6LotteryResultClusterAnalysis extends AbstractMachineLearningServiceImpl<BisectingKMeansModel, Seq<Trace>, PlotlySettings> {
+public class HongKongMark6LotteryResultClusterAnalysis extends AbstractMachineLearningComponentImpl<BisectingKMeansModel, Seq<Trace>, PlotlySettings> {
 
     public HongKongMark6LotteryResultClusterAnalysis() {
         super(BisectingKMeansModel.class);

@@ -1,7 +1,7 @@
 package io.openenterprise.daisy.rs;
 
 import io.openenterprise.daisy.rs.model.TrainingResponse;
-import io.openenterprise.daisy.spark.ml.AbstractMachineLearningServiceImpl;
+import io.openenterprise.daisy.spark.ml.AbstractMachineLearningComponentImpl;
 import io.openenterprise.daisy.spark.ml.ModelStorage;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -31,7 +31,7 @@ public class MlApiImpl implements MlApi {
             throw new NoSuchBeanDefinitionException(name);
         }
 
-        var machineLearning = applicationContext.getBean(name, AbstractMachineLearningServiceImpl.class);
+        var machineLearning = applicationContext.getBean(name, AbstractMachineLearningComponentImpl.class);
         // TODO This can be expensive and will need to be enhanced later:
         var items = machineLearning.predict(modelId, jsonString, Collections.emptyMap(), modelStorage).toJSON()
                 .collectAsList().stream().map(Object::toString).collect(Collectors.joining(","));
@@ -46,7 +46,7 @@ public class MlApiImpl implements MlApi {
             throw new NoSuchBeanDefinitionException(name);
         }
 
-        var machineLearning = applicationContext.getBean(name, AbstractMachineLearningServiceImpl.class);
+        var machineLearning = applicationContext.getBean(name, AbstractMachineLearningComponentImpl.class);
         var dataset = machineLearning.buildDataset(parameters);
         var modelId = machineLearning.buildModel(dataset, parameters, modelStorage);
         var modelUri = modelStorage.getUriOfModel(modelId);

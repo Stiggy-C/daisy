@@ -30,14 +30,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"spring.profiles.active=local_spark,pipeline_example"})
-class RecentPurchaseExampleStreamingDatasetServiceTest extends AbstractTest {
+class RecentPurchaseExampleStreamingDatasetComponentTest extends AbstractTest {
 
     @Autowired
     @Qualifier("postgresDatasource")
     protected DataSource dataSource;
 
     @Autowired
-    protected RecentPurchaseExampleStreamingDatasetService recentPurchaseExampleStreamingPipeline;
+    protected RecentPurchaseExampleStreamingDatasetComponent recentPurchaseExampleStreamingPipeline;
 
     @Test
     public void test() throws TimeoutException, AnalysisException, StreamingQueryException {
@@ -81,8 +81,8 @@ class RecentPurchaseExampleStreamingDatasetServiceTest extends AbstractTest {
         protected PostgreSQLContainer postgreSQLContainer;
 
         @Bean
-        protected RecentPurchaseExampleStreamingDatasetService recentPurchaseExampleStreamingPipeline() {
-            return new RecentPurchaseExampleStreamingDatasetService();
+        protected RecentPurchaseExampleStreamingDatasetComponent recentPurchaseExampleStreamingPipeline() {
+            return new RecentPurchaseExampleStreamingDatasetComponent();
         }
 
         @PostConstruct
@@ -102,7 +102,7 @@ class RecentPurchaseExampleStreamingDatasetServiceTest extends AbstractTest {
                     "s3a://" + TEST_S3_BUCKET + "/checkpoints/recentPurchaseExampleStreamingPipeline");
 
             ((ConfigurableEnvironment) environment).getPropertySources()
-                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleDatasetService.class.getName(), properties));
+                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleDatasetComponent.class.getName(), properties));
         }
     }
 }

@@ -13,8 +13,8 @@ import java.util.concurrent.TimeoutException;
 /**
  * The base of a streaming data pipeline to be run on an Apache Spark cluster.
  */
-public abstract class AbstractStreamingDatasetServiceImpl extends AbstractBaseDatasetServiceImpl
-    implements StreamingDatasetService {
+public abstract class AbstractStreamingDatasetComponentImpl extends AbstractBaseDatasetComponentImpl
+    implements StreamingDatasetComponent {
 
     /**
      * Run this as a streaming pipeline

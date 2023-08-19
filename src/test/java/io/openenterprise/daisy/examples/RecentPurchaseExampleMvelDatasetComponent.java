@@ -1,7 +1,7 @@
 package io.openenterprise.daisy.examples;
 
 import com.amazonaws.services.s3.AmazonS3;
-import io.openenterprise.daisy.spark.sql.AbstractMvelPlotGeneratingDatasetServiceImpl;
+import io.openenterprise.daisy.spark.sql.AbstractMvelPlotGeneratingDatasetComponentImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Profile;
@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 @Component("recentPurchaseExampleMvelPipeline")
 @ConditionalOnBean(AmazonS3.class)
 @Profile("pipeline_example")
-public class RecentPurchaseExampleMvelDatasetService extends AbstractMvelPlotGeneratingDatasetServiceImpl {
+public class RecentPurchaseExampleMvelDatasetComponent extends AbstractMvelPlotGeneratingDatasetComponentImpl {
 
     @Value("#{'${recentPurchaseExampleMvelPipeline.build-dataset-expressions}'.split(';')}")
     public void setBuildDatasetExpressions(@Nonnull String[] buildDatasetExpressions) {

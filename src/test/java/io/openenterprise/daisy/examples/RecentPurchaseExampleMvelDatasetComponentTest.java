@@ -32,10 +32,10 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@Import(RecentPurchaseExampleMvelDatasetServiceTest.Configuration.class)
+@Import(RecentPurchaseExampleMvelDatasetComponentTest.Configuration.class)
 @PropertySource(value = "classpath:recentPurchaseExampleMvelPipeline.yaml", factory = YamlPropertySourceFactory.class)
 @TestPropertySource(properties = {"spring.profiles.active=local_spark,pipeline_example"})
-class RecentPurchaseExampleMvelDatasetServiceTest extends AbstractTest {
+class RecentPurchaseExampleMvelDatasetComponentTest extends AbstractTest {
 
     @Autowired
     protected AmazonS3 amazonS3;
@@ -45,7 +45,7 @@ class RecentPurchaseExampleMvelDatasetServiceTest extends AbstractTest {
     protected DataSource dataSource;
 
     @Autowired
-    protected RecentPurchaseExampleMvelDatasetService recentPurchaseExampleMvelDatasetService;
+    protected RecentPurchaseExampleMvelDatasetComponent recentPurchaseExampleMvelDatasetService;
 
     @Test
     void test() {
@@ -101,8 +101,8 @@ class RecentPurchaseExampleMvelDatasetServiceTest extends AbstractTest {
         protected PostgreSQLContainer postgreSQLContainer;
 
         @Bean
-        protected RecentPurchaseExampleMvelDatasetService recentPurchaseExampleMvelDatasetService() {
-            return new RecentPurchaseExampleMvelDatasetService();
+        protected RecentPurchaseExampleMvelDatasetComponent recentPurchaseExampleMvelDatasetService() {
+            return new RecentPurchaseExampleMvelDatasetComponent();
         }
 
         @PostConstruct
@@ -116,7 +116,7 @@ class RecentPurchaseExampleMvelDatasetServiceTest extends AbstractTest {
             properties.setProperty("recentPurchaseExampleMvelPipeline.postgres-jdbc-user", postgreSQLContainer.getUsername());
 
             ((ConfigurableEnvironment) environment).getPropertySources()
-                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleMvelDatasetService.class.getName(), properties));
+                    .addLast(new PropertiesPropertySource(RecentPurchaseExampleMvelDatasetComponent.class.getName(), properties));
         }
     }
 

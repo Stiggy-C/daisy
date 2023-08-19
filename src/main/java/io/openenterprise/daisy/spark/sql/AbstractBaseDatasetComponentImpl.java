@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class AbstractBaseDatasetServiceImpl implements BaseDatasetService {
+public abstract class AbstractBaseDatasetComponentImpl implements BaseDatasetComponent {
 
     @Inject
     protected SparkSession sparkSession;

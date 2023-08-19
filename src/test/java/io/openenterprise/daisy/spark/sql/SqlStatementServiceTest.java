@@ -33,7 +33,7 @@ class SqlStatementServiceTest extends AbstractTest {
             "'path' = 's3a://" + TEST_S3_BUCKET + "/csv_files/transactions.csv')\n";
 
     @Autowired
-    protected SqlStatementService sqlStatementService;
+    protected SqlStatementComponent sqlStatementService;
 
     @Test
     void testBuildDataset() {
@@ -55,8 +55,8 @@ class SqlStatementServiceTest extends AbstractTest {
     public static class Configuration {
 
         @Bean
-        public SqlStatementService sqlStatementService() {
-            return new SqlStatementService();
+        public SqlStatementComponent sqlStatementService() {
+            return new SqlStatementComponent();
         }
     }
 }

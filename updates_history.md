@@ -2,18 +2,18 @@
 * MVEL integration.
   * Removed ExpressionService and replaced with [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
     as MVEL offer more flexibility over SpEL.
-  * Added [AbstractMvelDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetServiceImpl.java),
-    [AbstractMvelPlotGeneratingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetServiceImpl.java)
-    and [AbstractMvelStreamingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelStreamingDatasetServiceImpl.java)
+  * Added [AbstractMvelDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java),
+    [AbstractMvelPlotGeneratingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetComponentImpl.java)
+    and [AbstractMvelStreamingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelStreamingDatasetComponentImpl.java)
     which makes use of [MvelExpressionService](src/main/java/io/openenterprise/daisy/spark/MvelExpressionService.java)
-    * See [RecentPurchaseExampleMvelDatasetService](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetService.java) and
-      [RecentPurchaseExampleMvelDatasetServiceTest.java](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetServiceTest.java) for usage
+    * See [RecentPurchaseExampleMvelDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetComponent.java) and
+      [RecentPurchaseExampleMvelDatasetComponentTest.java](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetComponentTest.java) for usage
 
 ### 2023-07-29
 * plotly-scala integration.
-    * Added [AbstractPlotGeneratingDatasetServiceImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetServiceImpl.java)
+    * Added [AbstractPlotGeneratingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetComponentImpl.java)
       which allows plotting of the resulting Dataset
-        * [RecentPurchaseExampleDatasetService](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetService.java) has
+        * [RecentPurchaseExampleDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponent.java) has
           been updated to showcase the integration
 
 ### 2023-07-15
@@ -26,5 +26,5 @@
 
 ### 2023-06-11
 * Ability to create (both internal & external) table & (both global & local) view within Apache Spark with
-  io.openenterprise.daisy.spark.sql.AbstractBaseDatasetServiceImpl.buildDataset(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference).
+  io.openenterprise.daisy.spark.sql.AbstractBaseDatasetComponentImpl.buildDataset(java.util.Map<java.lang.String,?>, io.openenterprise.daisy.spark.sql.CreateTableOrViewPreference).
 * DeltaLake integration.

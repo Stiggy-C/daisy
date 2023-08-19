@@ -16,8 +16,8 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.util.Map;
 
-public abstract class AbstractPlotGeneratingDatasetServiceImpl<PD, PS extends PlotSettings>
-        extends AbstractDatasetServiceImpl implements PlotGeneratingDatasetService {
+public abstract class AbstractPlotGeneratingDatasetComponentImpl<PD, PS extends PlotSettings>
+        extends AbstractDatasetComponentImpl implements PlotGeneratingDatasetComponent {
 
     @Override
     public void plot(@NotNull Dataset<Row> dataset, @NotNull Map<String, ?> parameters) {

@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * The base of all Apache Spark {@link Dataset} operations.
  */
-public interface BaseDatasetService {
+public interface BaseDatasetComponent {
 
     Dataset<Row> buildDataset(@Nonnull Map<String, ?> parameters);
 }

@@ -1,6 +1,6 @@
 package io.openenterprise.daisy.springframework.boot.autoconfigure;
 
-import io.openenterprise.daisy.spark.sql.BaseDatasetService;
+import io.openenterprise.daisy.spark.sql.BaseDatasetComponent;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.context.ApplicationContext;
@@ -28,7 +28,7 @@ public class ApplicationConfiguration {
 
     @Bean("datasetServicesMap")
     @Order
-    protected Map<String, BaseDatasetService> datasetServiceMap(@Nonnull ApplicationContext applicationContext) {
-        return applicationContext.getBeansOfType(BaseDatasetService.class);
+    protected Map<String, BaseDatasetComponent> datasetServiceMap(@Nonnull ApplicationContext applicationContext) {
+        return applicationContext.getBeansOfType(BaseDatasetComponent.class);
     }
 }

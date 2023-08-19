@@ -20,9 +20,9 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-public abstract class AbstractMvelStreamingDatasetServiceImpl implements MvelStreamingDatasetService {
+public abstract class AbstractMvelStreamingDatasetComponentImpl implements MvelStreamingDatasetComponent {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(MvelStreamingDatasetService.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(MvelStreamingDatasetComponent.class);
 
     protected String[] buildDatasetExpressions;
 

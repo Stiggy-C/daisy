@@ -2,7 +2,7 @@ package io.openenterprise.daisy.rs;
 
 import io.openenterprise.daisy.rs.model.BuildDatasetResponse;
 import io.openenterprise.daisy.rs.model.CreateTableOrViewPreference;
-import io.openenterprise.daisy.spark.sql.AbstractBaseDatasetServiceImpl;
+import io.openenterprise.daisy.spark.sql.AbstractBaseDatasetComponentImpl;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -30,11 +30,11 @@ public class DatasetApiImpl implements DatasetApi {
 
         var bean = applicationContext.getBean(name);
 
-        assert bean instanceof AbstractBaseDatasetServiceImpl;
+        assert bean instanceof AbstractBaseDatasetComponentImpl;
 
         var mappedCreateTempViewPreference= mapCreateTableOrViewPreference(createTempViewPreference);
 
-        ((AbstractBaseDatasetServiceImpl) bean).buildDataset(parameters, mappedCreateTempViewPreference);
+        ((AbstractBaseDatasetComponentImpl) bean).buildDataset(parameters, mappedCreateTempViewPreference);
 
         boolean createdTable = Objects.nonNull(mappedCreateTempViewPreference) && mappedCreateTempViewPreference.isTable();
         boolean createdView = Objects.nonNull(mappedCreateTempViewPreference) && mappedCreateTempViewPreference.isView();

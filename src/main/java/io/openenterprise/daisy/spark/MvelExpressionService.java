@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.openenterprise.daisy.Parameters;
 import io.openenterprise.daisy.mvel2.integration.impl.CachingMapVariableResolverFactory;
-import io.openenterprise.daisy.spark.sql.BaseDatasetService;
+import io.openenterprise.daisy.spark.sql.BaseDatasetComponent;
 import lombok.Getter;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ClassUtils;
@@ -16,7 +16,6 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
-import org.mvel2.integration.VariableResolverFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Service to evaluate MVEL expression against {@link SparkSession} & implementations of {@link BaseDatasetService}. Not to
+ * Service to evaluate MVEL expression against {@link SparkSession} & implementations of {@link BaseDatasetComponent}. Not to
  * be confused with {@link org.apache.spark.sql.connector.expressions.Expression}
  *
  * Provide ability to store evaluation history in a session cache powered by implementation of {@link Cache} of your
@@ -53,7 +52,7 @@ public class MvelExpressionService {
 
     @Inject
     @Named("datasetServicesMap")
-    protected Map<String, BaseDatasetService> datasetServicesMap;
+    protected Map<String, BaseDatasetComponent> datasetServicesMap;
 
     @Inject
     @Named("expressionServiceSessionsCache")
