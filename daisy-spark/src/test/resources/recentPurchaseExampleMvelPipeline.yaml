@@ -1,0 +1,64 @@
+recentPurchaseExampleMvelPipeline:
+  build-dataset-expressions: >
+    csvDataset = spark.read().format("csv").option("header", "true").option("inferSchema", "true")
+      .load(parameters["csvS3Uri"]).select("memberId", "skuId", "skuCategory", "skuPrice", "createdDateTime").as("csv");
+    jdbcDataset = spark.read().format("jdbc").option("driver", "com.mysql.cj.jdbc.Driver")
+      .option("url", "${recentPurchaseExampleMvelPipeline.my-sql-jdbc-url}")
+      .option("user", "${recentPurchaseExampleMvelPipeline.my-sql-jdbc-user}")
+      .option("password", "${recentPurchaseExampleMvelPipeline.my-sql-jdbc-password}")
+      .option("query", "select m.id, m.age, m.gender, m.tier from members m").load().as("jdbc");
+    dataset = jdbcDataset.join(csvDataset, jdbcDataset.col("id").equalTo(csvDataset.col("memberId")));
+  build-plot-data-expressions: >
+    subPlot0Dataset = dataset.select("skuCategory").groupBy("skuCategory")
+      .agg(functions.count("skuCategory").as("count")).as("subPlot0Dataset");
+    subPlot0Labels = subPlot0Dataset.select("skuCategory", "count").collectAsList().stream()
+      .map(new MvelFunction("arg.getString(arg.fieldIndex(''skuCategory''))", parserContext)).collect(Collectors.toList());
+    subPlot0LabelsSeq = Sequence.fromStringSeq(JavaConverters.asScalaBuffer(subPlot0Labels).toSeq());
+    subPlot0Values = subPlot0Dataset.select("skuCategory", "count").collectAsList().stream()
+      .map(new MvelFunction("arg.get(arg.fieldIndex(''count''))", parserContext)).collect(Collectors.toList());
+    subPlot0ValuesSeq = Sequence.fromLongSeq(JavaConverters.asScalaBuffer(subPlot0Values).toSeq());
+    bar0 = new Bar(subPlot0LabelsSeq, subPlot0ValuesSeq).withName("SKU categories ranking");
+    subPlot1Dataset = dataset.select("skuCategory", "skuPrice").groupBy("skuCategory")
+      .agg(functions.max("skuPrice").as("maxPrice")).as("subPlot1Dataset");
+    subPlot1Labels = subPlot1Dataset.select("skuCategory", "maxPrice").collectAsList().stream()
+      .map(new MvelFunction("arg.getString(arg.fieldIndex(''skuCategory''))", parserContext)).collect(Collectors.toList());
+    subPlot1LabelsSeq = Sequence.fromStringSeq(JavaConverters.asScalaBuffer(subPlot1Labels).toSeq());
+    subPlot1Values = subPlot1Dataset.select("skuCategory", "maxPrice").collectAsList().stream()
+      .map(new MvelFunction("arg.get(arg.fieldIndex(''maxPrice''))", parserContext)).collect(Collectors.toList());
+    subPlot1ValuesSeq = Sequence.fromDoubleSeq(JavaConverters.asScalaBuffer(subPlot1Values).toSeq());
+    bar1 = new Bar(subPlot1LabelsSeq, subPlot1ValuesSeq).withName("Max price of each SKU category");
+    traces = Lists.newArrayList(bar0, bar1);
+    plotData = scala.collection.JavaConverters.asScalaBuffer(traces).toSeq();
+  build-plot-settings-expressions: >
+    plotlySettings = new PlotlySettings();
+    config = new Config().withEditable(false).withResponsive(true);
+    grid = new Grid().withColumns(2).withRows(1);
+    layout = new Layout().withGrid(grid).withTitle(MapUtils.getString(parameters, Parameters.PLOT_TITLE.getName(), 
+      "recentPurchaseExampleMvelPipeline"));
+    plotlySettings.setConfig(config);
+    plotlySettings.setLayout(layout);
+  plot-expressions: >
+    ${recentPurchaseExampleMvelPipeline.build-plot-data-expressions};
+    ${recentPurchaseExampleMvelPipeline.build-plot-settings-expressions};
+    plot = File.createTempFile("recentPurchaseExampleMvelPipeline", ".html");
+    plotPath = plot.getAbsolutePath();
+    Plotly.plot(plotPath, plotData, plotlySettings.getLayout(), plotlySettings.getConfig(),plotlySettings.getUseCdn(), 
+      plotlySettings.getOpenInBrowser(), plotlySettings.getAddSuffixIfExists());
+    amazonS3Uri = new AmazonS3URI(URI.create(parameters["plotS3Uri"]));
+    amazonS3 = applicationContext.getBean(AmazonS3);
+    amazonS3.putObject(amazonS3Uri.getBucket(), amazonS3Uri.getKey(), plot);
+  to-plot-json-expressions:
+    ${recentPurchaseExampleMvelPipeline.build-plot-data-expressions};
+    ${recentPurchaseExampleMvelPipeline.build-plot-settings-expressions};
+    Plotly.jsonSnippet(plotData, plotlySettings.getLayout(), plotlySettings.getConfig());
+  write-dataset-expressions: >
+    dataset.write()
+      .mode("append")
+      .format("postgresql")
+      .option("url", "${recentPurchaseExampleMvelPipeline.postgres-jdbc-url}")
+      .option("user", "${recentPurchaseExampleMvelPipeline.postgres-jdbc-user}")
+      .option("password", "${recentPurchaseExampleMvelPipeline.postgres-jdbc-password}")
+      .option("dbtable", "members_purchases")
+      .option("primaryKeys", "id, skuId, createdDateTime")
+      .option("upsert", "true")
+      .save();

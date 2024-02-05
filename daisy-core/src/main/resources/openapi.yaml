@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: Daisy
+  description: "A set of REST-ful APIs to control & manage Daisy's component"
+  version: 0.0.1
+paths:
+  /dataset-operations:
+    post:
+      description: Invoke a DatasetOperation
+      summary: Invoke a DatasetOperation
+      tags:
+        - datasetOperation
+      operationId: "invokeDatasetOperation"
+      parameters:
+        - name: beanNameOrClassName
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameters'
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          description: OK
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbnormalResponse'
+          description: Internal Server Error
+components:
+  schemas:
+    AbnormalResponse:
+      type: object
+      required:
+        - throwable
+        - stackFrame
+      properties:
+        throwable:
+          type: string
+        stackFrame:
+          type: string
+    Parameters:
+      additionalProperties:
+        type: object
+    SuccessResponse:
+      type: object
+      required:
+        - result
+        - resultClass
+      properties:
+        result:
+          type: object
+        resultClass:
+          type: string
+

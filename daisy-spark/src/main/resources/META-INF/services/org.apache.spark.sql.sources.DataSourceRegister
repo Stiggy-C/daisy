@@ -1,0 +1,2 @@
+io.openenterprise.daisy.spark.sql.execution.datasources.jdbc.MySqlJdbcRelationProvider
+io.openenterprise.daisy.spark.sql.execution.datasources.jdbc.PostgreSqlJdbcRelationProvider

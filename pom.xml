@@ -2,75 +2,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.10</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
 	<groupId>io.openenterprise</groupId>
 	<artifactId>daisy</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>daisy</name>
-	<description>A simple (low code) data lake-house (wanna be) which built around Apache Spark</description>
-	<properties>
+	<version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>daisy</name>
+	<description>A simple (low code) data lake-house (wanna be)</description>
+
+    <modules>
+		<module>daisy-test</module>
+        <module>daisy-core</module>
+        <module>daisy-spark</module>
+	</modules>
+
+    <properties>
 		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<deltalake.version>2.3.0</deltalake.version>
+		<cxf.version>3.6.2</cxf.version>
+		<deltalake.version>3.0.0</deltalake.version>
+		<guava.version>33.0.0-jre</guava.version>
 		<hadoop.version>3.3.4</hadoop.version>
-		<mysql-connectorj.version>8.0.32</mysql-connectorj.version>
-		<janino.version>3.0.16</janino.version>
-		<mvel.version>2.5.0.Final</mvel.version>
+		<jackson.version>2.15.3</jackson.version>
+		<janino.version><!-- 3.0.16 -->3.1.11</janino.version>
+		<kotlin.version>1.9.22</kotlin.version>
+		<!--<jpmml.version>2.4.0</jpmml.version>-->
+		<mvel.version>2.5.1.Final</mvel.version>
+		<mysql-connectorj.version>8.0.33</mysql-connectorj.version>
 		<ploty.version>0.8.4</ploty.version>
-		<pmml4s-spark.version>0.9.16</pmml4s-spark.version>
-		<postgresql-jdbc.version>42.6.0</postgresql-jdbc.version>
-		<spark.version>3.3.2</spark.version>
+		<pmml4s-spark.version>1.0.1</pmml4s-spark.version>
+		<postgresql-jdbc.version>42.7.1</postgresql-jdbc.version>
+		<reflections.version>0.10.2</reflections.version>
+		<spark.version>3.5.0</spark.version>
+		<spring-boot.version>2.7.18</spring-boot.version>
 		<spring-cloud-aws.version>2.4.4</spring-cloud-aws.version>
-		<testcontainers.version>1.17.6</testcontainers.version>
-	</properties>
+		<start-class>io.openenterprise.daisy.DaisyApplication</start-class>
+		<testcontainers.version>1.19.3</testcontainers.version>
+    </properties>
+
 	<dependencies>
 		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-json-provider</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<version>${mysql-connectorj.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.trivago</groupId>
-			<artifactId>triava</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.awspring.cloud</groupId>
-			<artifactId>spring-cloud-aws-core</artifactId>
-			<version>${spring-cloud-aws.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.amazonaws</groupId>
-					<artifactId>aws-java-sdk-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.amazonaws</groupId>
-					<artifactId>aws-java-sdk-ec2</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.amazonaws</groupId>
-					<artifactId>aws-java-sdk-s3</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.delta</groupId>
-			<artifactId>delta-core_2.12</artifactId>
-			<version>${deltalake.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.delta</groupId>
-			<artifactId>delta-storage-s3-dynamodb</artifactId>
-			<version>${deltalake.version}</version>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
+			<version>1.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.cache</groupId>
@@ -78,118 +53,34 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>${mysql-connectorj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.15.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.12.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
-			<version>3.5.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
-			<version>3.5.5</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-validation</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-web</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-aws</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents.client5</groupId>
-			<artifactId>httpclient5</artifactId>
-			<version>5.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-mllib_2.12</artifactId>
-			<version>${spark.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.scala-lang</groupId>
-					<artifactId>scala-library</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-sql_2.12</artifactId>
-			<version>${spark.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.janino</groupId>
-					<artifactId>commons-compiler</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.janino</groupId>
-					<artifactId>janino</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-sql-kafka-0-10_2.12</artifactId>
-			<version>${spark.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.janino</groupId>
-			<artifactId>commons-compiler</artifactId>
-			<version>${janino.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.janino</groupId>
-			<artifactId>janino</artifactId>
-			<version>${janino.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mvel</groupId>
-			<artifactId>mvel2</artifactId>
-			<version>${mvel.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.plotly-scala</groupId>
-			<artifactId>plotly-almond_2.12</artifactId>
-			<version>${ploty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.plotly-scala</groupId>
-			<artifactId>plotly-core_2.12</artifactId>
-			<version>${ploty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.pmml4s</groupId>
-			<artifactId>pmml4s-spark_2.12</artifactId>
-			<version>${pmml4s-spark.version}</version>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
+			<version>${kotlin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -200,12 +91,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<!-- Change me if upgraded Spark: -->
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.12.15</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -220,6 +105,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -249,42 +144,31 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-csv</artifactId>
-			<version>1.10.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>localstack</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>mysql</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<!-- Import dependency management from Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.testcontainers</groupId>
 				<artifactId>testcontainers-bom</artifactId>
@@ -294,76 +178,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>io.swagger.codegen.v3</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>3.0.42</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.cxf</groupId>
-						<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
-						<version>3.5.5</version>
-					</dependency>
-					<dependency>
-						<groupId>com.fasterxml.jackson.jaxrs</groupId>
-						<artifactId>jackson-jaxrs-json-provider</artifactId>
-						<version>2.13.5</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<configOptions>
-								<additionalProperties>jackson=true</additionalProperties>
-								<interfaceOnly>true</interfaceOnly>
-								<sourceFolder>src/main/java</sourceFolder>
-							</configOptions>
-							<ignoreFileOverride>${project.basedir}/.swagger-codegen-ignore</ignoreFileOverride>
-							<inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
-							<language>jaxrs-cxf</language>
-							<apiPackage>io.openenterprise.daisy.rs</apiPackage>
-							<modelPackage>io.openenterprise.daisy.rs.model</modelPackage>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>s${project.build.directory}/generated-sources/swagger/src/main/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

@@ -1,4 +1,4 @@
-### [AbstractBaseDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractBaseDatasetComponentImpl.java)
+### [AbstractBaseDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractBaseDatasetComponentImpl.java)
 This class is the base of other dataset related classes in Daisy. Necessary methods to build (Spark) dataset and to
 create a (Spark) table/view are implemented in this class. It also defines the (abstract) methods which need to be
 implemented when extending this class.
@@ -13,7 +13,7 @@ The following abstract methods are defined in this class and must be implemented
 
 * buildDataset(java.util.Map<java.lang.String,?>) (Custom logic to build the desired dataset from data sources goes here.)
 
-### [AbstractDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractDatasetComponentImpl.java)
+### [AbstractDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractDatasetComponentImpl.java)
 This class add on top of AbstractBaseDatasetComponentImpl to provide the ability to write the built dataset to desired
 data sink. It also provides methods to run as a data pipeline. The following methods need to be implemented when
 extending this class,
@@ -29,21 +29,21 @@ with the membership table in a MySQL database and write the results into a Postg
 
 Usage of this class can be seen from [RecentPurchaseExampleDatasetComponentTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponentTest.java)
 
-### [AbstractMvelDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java)
+### [AbstractMvelDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java)
 allows MVEL based expressions to be injected (by Spring Boot) to build dataset, write dataset or run as pipeline
 
-### [AbstractMvelPlotGeneratingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetComponentImpl.java)
-is an extension of [AbstractMvelDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java) which add
+### [AbstractMvelPlotGeneratingDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractMvelPlotGeneratingDatasetComponentImpl.java)
+is an extension of [AbstractMvelDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractMvelDatasetComponentImpl.java) which add
 the ability to generate plot powered by Plotly or JSON to be used with Plotly by the injected MVEL based expressions.
 
 [RecentPurchaseExampleMvelDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleMvelDatasetComponent.java) is an 
-example of this. Expressions in [recentPurchaseExampleMvelPipeline.yaml](src/test/resources/recentPurchaseExampleMvelPipeline.yaml) are injected
+example of this. Expressions in [recentPurchaseExampleMvelPipeline.yaml](daisy-spark/src/test/resources/recentPurchaseExampleMvelPipeline.yaml) are injected
 and make used to build dataset, build JSON for Plotly, build Plotly plot, write dataset and even run as a pipeline.
 
-### [AbstractMvelStreamingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractStreamingDatasetComponentImpl.java) allows
+### [AbstractMvelStreamingDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractStreamingDatasetComponentImpl.java) allows
 MVEL expressions to be injected by Spring Boot to build (streaming) dataset, stream dataset to sink and even run as a pipeline.
 
-### [AbstractPlotGeneratingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetComponentImpl.java)
+### [AbstractPlotGeneratingDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractPlotGeneratingDatasetComponentImpl.java)
 Extending AbstractDatasetComponentImpl, this class add integration with plotly-scala to generate plotly JS powered plot in
 a html file or generate the JSON to be used by plotly JS. The following methods need to be implemented when extending
 this class,
@@ -57,8 +57,8 @@ this class,
 [RecentPurchaseExampleDatasetComponent](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleDatasetComponent.java)
 is an example implementation of this class.
 
-### [AbstractStreamingDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractStreamingDatasetComponentImpl.java)
-This class is the streaming counter part of [AbstractDatasetComponentImpl](src/main/java/io/openenterprise/daisy/spark/sql/AbstractDatasetComponentImpl.java).
+### [AbstractStreamingDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractStreamingDatasetComponentImpl.java)
+This class is the streaming counter part of [AbstractDatasetComponentImpl](daisy-core/src/main/java/openenterprise/daisy/spark/sql/AbstractDatasetComponentImpl.java).
 It has methods to read & write from/to streaming data sources/sink and methods to run as a streaming data pipeline. The
 following methods need to be implemented when extending this class,
 
@@ -74,7 +74,7 @@ is an example implementation of this class. It is the streaming version of
 Usage of this class can be seen from
 [RecentPurchaseExampleStreamingDatasetComponentTest](src/test/java/io/openenterprise/daisy/examples/RecentPurchaseExampleStreamingDatasetComponentTest.java)
 
-### [AbstractMachineLearningServiceImpl](src/main/java/io/openenterprise/daisy/spark/ml/AbstractMachineLearningComponentImpl.java)
+### [AbstractMachineLearningServiceImpl](daisy-core/src/main/java/openenterprise/daisy/spark/ml/AbstractMachineLearningComponentImpl.java)
 This class contains the foundation of machine learning workflow running on an Apache Spark cluster. Spark engineers
 just need to extend this class and fill in the following methods to build/train machine learning model, store the built
 model to both cloud & local storage and use the built/trained model to get a prediction,
