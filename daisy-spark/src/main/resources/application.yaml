@@ -6,5 +6,9 @@ cxf:
     enabled: true
 
 daisy:
-  s3:
-    bucket: daisy
+  aws:
+    s3:
+      bucket: daisy
+  spark:
+    streaming:
+      checkpoint-location: spark-checkpoints

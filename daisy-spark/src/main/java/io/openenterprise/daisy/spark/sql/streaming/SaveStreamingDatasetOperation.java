@@ -1,4 +1,4 @@
-package io.openenterprise.daisy.spark.sql;
+package io.openenterprise.daisy.spark.sql.streaming;
 
 import io.openenterprise.daisy.Operation;
 import org.apache.spark.sql.Dataset;
@@ -8,7 +8,5 @@ import org.apache.spark.sql.streaming.StreamingQuery;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public interface StreamDatasetOperation extends Operation<StreamingQuery> {
-
-    StreamingQuery stream(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, Object> parameters);
+public interface SaveStreamingDatasetOperation extends Operation<StreamingQuery> {
 }

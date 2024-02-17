@@ -27,7 +27,7 @@ class AmazonS3ModelStorage : ModelStorage {
     @Value("\${daisy.spark.model.directory:/ml/models}")
     private val directory: String? = null
 
-    @Value("\${daisy.s3.bucket}")
+    @Value("\${daisy.aws.s3.bucket}")
     private var s3Bucket: String? = null
 
     /**

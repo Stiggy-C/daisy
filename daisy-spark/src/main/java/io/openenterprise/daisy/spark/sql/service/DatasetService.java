@@ -1,6 +1,5 @@
 package io.openenterprise.daisy.spark.sql.service;
 
-
 import org.apache.spark.sql.AnalysisException;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -11,41 +10,38 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Properties;
 
-public interface DatasetService {
-
-    @Nullable
-    Dataset<Row> loadDataset(@Nonnull Map<String, Object> parameters);
-
-    @Nonnull
-    Dataset<Row> loadDataset(@Nonnull String format, @Nullable Map<String, String> options, @Nonnull String path);
+/**
+ * Service which allows caller to interact with {@link Dataset} with ease. This is not serializable and should not be
+ * used in any user defined function (UDF) of Apache Spark.
+ */
+public interface DatasetService extends BaseDatasetService<Void> {
 
     @Nonnull
     Dataset<Row> loadDataset(@Nonnull String format, @Nullable Map<String, String> options, @Nonnull String... paths);
 
     @Nonnull
-    Dataset<Row> loadDataset(@Nonnull String jdbcUrl, @Nonnull String jdbcDbTable, @Nonnull Properties connectionProperties);
+    Dataset<Row> loadDataset(@Nonnull String jdbcUrl, @Nonnull String jdbcDbTable, @Nonnull Properties jdbcProperties,
+                             @Nullable Map<String, String> options);
 
     @Nonnull
     Dataset<Row> loadDataset(@Nonnull String jdbcUrl, @Nonnull String jdbcDbTable, @Nonnull String jdbcUser,
-                             @Nonnull String jdbcPassword, @Nullable String jdbcDriver);
-
-    @Nonnull
-    Dataset<Row> loadDataset(@Nonnull String tableOrView);
-
-    void saveDataset(@Nonnull Dataset<Row> dataset, @Nonnull Map<String, Object> parameters) throws AnalysisException;
+                             @Nonnull String jdbcPassword, @Nullable String jdbcDriver,
+                             @Nullable Map<String, String> options);
 
     void saveDataset(@Nonnull Dataset<Row> dataset, @Nonnull String table, @Nullable String format,
-                     @Nullable SaveMode saveMode);
+                     @Nullable Map<String, String> options, @Nullable SaveMode saveMode);
 
-    void saveDataset(@Nonnull Dataset<Row> dataset, @Nonnull String view, boolean global, boolean replace) throws AnalysisException;
+    void saveDataset(@Nonnull Dataset<Row> dataset, @Nonnull String view, boolean global, boolean replace)
+            throws AnalysisException;
 
-    void saveDatasetExternally(@Nonnull Dataset<Row> dataset, @Nullable String format, @Nonnull String path,
+    void saveDatasetExternally(@Nonnull Dataset<Row> dataset, @Nonnull String path, @Nullable String format,
+                               @Nullable Map<String, String> options, @Nonnull SaveMode saveMode);
+
+    void saveDatasetExternally(@Nonnull Dataset<Row> dataset, @Nonnull String jdbcUrl, @Nonnull String jdbcDbTable,
+                               @Nonnull Properties jdbcProperties, @Nullable Map<String, String> options,
                                @Nonnull SaveMode saveMode);
-
-    void saveDatasetExternally(@Nonnull Dataset<Row> dataset,  @Nonnull String jdbcUrl, @Nonnull String jdbcDbTable,
-                               @Nonnull Properties connectionProperties, @Nonnull SaveMode saveMode);
 
     void saveDatasetExternally(@Nonnull Dataset<Row> dataset, @Nonnull String jdbcUrl, @Nonnull String jdbcDbTable,
                                @Nonnull String jdbcUser, @Nonnull String jdbcPassword, @Nullable String jdbcDriver,
-                               @Nonnull SaveMode saveMode);
+                               @Nullable Map<String, String> options, @Nonnull SaveMode saveMode);
 }

@@ -31,7 +31,7 @@ import java.util.Properties;
 
 @ExtendWith(SpringExtension.class)
 @Import({TCacheConfiguration.class, ApplicationConfiguration.class, RecentPurchaseExampleCompositeOperationTest.Configuration.class})
-@TestPropertySource(properties = {"daisy.s3.bucket=daisy", "spring.profiles.active=local_spark,ml_example,spark,tCache"})
+@TestPropertySource(properties = {"daisy.aws.s3.bucket=daisy", "spring.profiles.active=local_spark,ml_example,spark,tCache"})
 class RecentPurchaseExampleCompositeOperationTest extends AbstractTest {
 
     @Autowired

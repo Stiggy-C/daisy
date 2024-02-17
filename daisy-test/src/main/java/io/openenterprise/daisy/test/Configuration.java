@@ -32,9 +32,9 @@ public class Configuration {
 
     private static final String LOCALSTACK_DOCKER_IMAGE_TAG = "localstack/localstack:3.0.2";
 
-    private static final String MYSQL_DOCKER_IMAGE_TAG = "mysql:8.0.35";
+    private static final String MYSQL_DOCKER_IMAGE_TAG = "mysql:8.0.36";
 
-    private static final String POSTGRESQL_DOCKER_IMAGE_TAG = "postgres:15.5";
+    private static final String POSTGRESQL_DOCKER_IMAGE_TAG = "postgres:16.2";
 
     @Bean
     protected AmazonS3 amazonS3(LocalStackContainer localStackContainer) {
@@ -108,11 +108,6 @@ public class Configuration {
     @Bean
     protected Network network() {
         return Network.newNetwork();
-    }
-
-    @Bean
-    protected ObjectMapper objectMapper() {
-        return new ObjectMapper().findAndRegisterModules().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Bean

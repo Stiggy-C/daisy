@@ -24,10 +24,10 @@ public abstract class AbstractSaveDatasetOperationImpl extends AbstractMvelDrive
     public Void invoke(@Nonnull Map<String, Object> parameters) {
         withInvocationContext(parameters, (param) -> {
             var dataset = getDataset(param);
+            assert Objects.nonNull(dataset);
+
             var paramCopy = Maps.newHashMap(param);
             paramCopy.put(DATASET.getKey(), dataset);
-
-            assert Objects.nonNull(dataset);
 
             this.eval(paramCopy);
 

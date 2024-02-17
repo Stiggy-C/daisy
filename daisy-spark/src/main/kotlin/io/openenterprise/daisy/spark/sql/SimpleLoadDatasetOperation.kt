@@ -1,25 +1,15 @@
 package io.openenterprise.daisy.spark.sql
 
-import com.google.common.base.CaseFormat
-import io.openenterprise.daisy.AbstractMvelDrivenOperationImpl
 import io.openenterprise.daisy.Invocation
-import io.openenterprise.daisy.Parameter.*
-import io.openenterprise.daisy.mvel2.integration.impl.CachingMapVariableResolverFactory
-import io.openenterprise.daisy.spark.sql.service.DatasetService
+import io.openenterprise.daisy.Parameter.MVEL_EXPRESSIONS
 import org.apache.commons.collections4.MapUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.Dataset
 import org.springframework.stereotype.Component
-import java.util.*
-import java.util.function.Consumer
 import javax.annotation.Nonnull
-import javax.inject.Inject
 
 @Component
 class SimpleLoadDatasetOperation : AbstractLoadDatasetOperationImpl() {
-
-    @Inject
-    private var datasetService: DatasetService? = null
 
     public override fun verifyParameters(@Nonnull parameters: Map<String, Any>) {
         super.verifyParameters(parameters)
@@ -95,26 +85,11 @@ class SimpleLoadDatasetOperation : AbstractLoadDatasetOperationImpl() {
     }
 
     @Nonnull
-    override fun getOrCreateVariableResolverFactory(
-        @Nonnull uuid: UUID, callback: Consumer<CachingMapVariableResolverFactory>?
-    ): CachingMapVariableResolverFactory {
-        val cachingMapVariableResolverFactory =
-            super.getOrCreateVariableResolverFactory(uuid, callback)
-
-        cachingMapVariableResolverFactory.createVariable("datasetService", datasetService)
-
-        return cachingMapVariableResolverFactory
-    }
-
-    @Nonnull
     protected fun addParameters(@Nonnull parameters: MutableMap<String, Any>) {
         val sessionId = getSessionId(parameters)
         val invocationContext = getOrCreateInvocationContext(sessionId)
         val currentInvocation = invocationContext.currentInvocation
-        val variableName = "dataset" + CaseFormat.LOWER_HYPHEN.to(
-            CaseFormat.LOWER_UNDERSCORE,
-            currentInvocation.id.toString()
-        )
+        val variableName = getDatasetVariable(currentInvocation)
         val mvelExpression = "$variableName = datasetService.loadDataset(parameters);$variableName"
 
         parameters[MVEL_EXPRESSIONS.key] = mvelExpression

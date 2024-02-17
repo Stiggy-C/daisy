@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 
 @ExtendWith(SpringExtension::class)
 @Import(ApplicationConfiguration::class)
-@TestPropertySource(properties = ["daisy.s3.bucket=daisy", "spring.profiles.active=local_spark,pipeline_example,tCache"])
+@TestPropertySource(properties = ["daisy.aws.s3.bucket=daisy", "spring.profiles.active=local_spark,pipeline_example,tCache"])
 class DatasetOperationApiImplTest: AbstractApiTest() {
 
     companion object {

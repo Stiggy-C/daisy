@@ -1,14 +1,15 @@
-package io.openenterprise.daisy.spark.sql
+package io.openenterprise.daisy.spark.sql.streaming
 
 import io.openenterprise.daisy.Invocation
 import io.openenterprise.daisy.mvel2.integration.impl.CachingMapVariableResolverFactory
-import io.openenterprise.daisy.spark.sql.Parameter.DATASET
-import io.openenterprise.daisy.spark.sql.Parameter.DATASET_VARIABLE
-import io.openenterprise.daisy.spark.sql.service.DatasetService
+import io.openenterprise.daisy.spark.sql.DatasetUtils
+import io.openenterprise.daisy.spark.sql.Parameter
+import io.openenterprise.daisy.spark.sql.streaming.service.StreamingDatasetService
 import org.apache.commons.lang3.ClassUtils
 import org.apache.commons.lang3.ObjectUtils
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
+import org.apache.spark.sql.streaming.StreamingQuery
 import org.springframework.stereotype.Component
 import java.util.*
 import java.util.function.Consumer
@@ -16,10 +17,8 @@ import javax.annotation.Nonnull
 import javax.inject.Inject
 
 @Component
-class SimpleSaveDatasetOperation : AbstractSaveDatasetOperationImpl() {
-
-    @Inject
-    private var datasetService: DatasetService? = null
+class SimpleSaveStreamingDatasetOperation(@Inject var streamingDatasetService: StreamingDatasetService) :
+    AbstractSaveStreamingDatasetOperationImpl() {
 
     @Nonnull
     override fun getOrCreateVariableResolverFactory(
@@ -28,13 +27,12 @@ class SimpleSaveDatasetOperation : AbstractSaveDatasetOperationImpl() {
         val cachingMapVariableResolverFactory =
             super.getOrCreateVariableResolverFactory(uuid, callback)
 
-        cachingMapVariableResolverFactory.createVariable("datasetService", datasetService)
+        cachingMapVariableResolverFactory.createVariable("streamingDatasetService", streamingDatasetService)
 
         return cachingMapVariableResolverFactory
     }
 
-    @Nonnull
-    override fun init(@Nonnull parameters: MutableMap<String, Any>): Invocation<Void> {
+    override fun init(parameters: MutableMap<String, Any>): Invocation<StreamingQuery> {
         val invocation = super.init(parameters)
 
         addParameters(parameters)
@@ -42,20 +40,20 @@ class SimpleSaveDatasetOperation : AbstractSaveDatasetOperationImpl() {
         return invocation
     }
 
-    override fun getDataset(parameters: Map<String, Any?>): Dataset<Row>? {
+    override fun getDataset(parameters: MutableMap<String, Any>): Dataset<Row>? {
         val dataset =
-            if (parameters.containsKey(DATASET.key) && Objects.nonNull(parameters[DATASET.key])) {
+            if (parameters.containsKey(Parameter.DATASET.key) && Objects.nonNull(parameters[Parameter.DATASET.key])) {
                 @Suppress("UNCHECKED_CAST")
-                parameters[DATASET.key] as Dataset<Row>
-            } else if (parameters.containsKey(DATASET_VARIABLE.key) &&
-                ObjectUtils.isNotEmpty(parameters[DATASET_VARIABLE.key]) &&
-                ClassUtils.isAssignable(parameters[DATASET_VARIABLE.key]!!.javaClass, String::class.java)
+                parameters[Parameter.DATASET.key] as Dataset<Row>
+            } else if (parameters.containsKey(Parameter.DATASET_VARIABLE.key) &&
+                ObjectUtils.isNotEmpty(parameters[Parameter.DATASET_VARIABLE.key]) &&
+                ClassUtils.isAssignable(parameters[Parameter.DATASET_VARIABLE.key]!!.javaClass, String::class.java)
             ) {
                 val sessionId = getSessionId(parameters)
                 val cachingMapVariableResolverFactory =
                     getOrCreateVariableResolverFactory(sessionId, null)
                 val variableResolver = cachingMapVariableResolverFactory
-                    .getVariableResolver(parameters[DATASET_VARIABLE.key].toString())
+                    .getVariableResolver(parameters[Parameter.DATASET_VARIABLE.key].toString())
 
                 assert(Objects.nonNull(variableResolver))
 
@@ -72,9 +70,15 @@ class SimpleSaveDatasetOperation : AbstractSaveDatasetOperationImpl() {
     }
 
     private fun addParameters(parameters: MutableMap<String, Any>) {
-        val mvelExpression = "datasetService.saveDataset(parameters[\"${DATASET.key}\"], parameters);"
+        val sessionId = getSessionId(parameters)
+        val invocationContext = getInvocationContext(sessionId)
+
+        assert(Objects.nonNull(invocationContext))
+
+        val streamingQueryVariable = getStreamingQueryVariable(invocationContext!!.currentInvocation)
+        val mvelExpression =
+            "$streamingQueryVariable = streamingDatasetService.saveDataset(parameters[\"${Parameter.DATASET.key}\"], parameters); $streamingQueryVariable;"
 
         parameters[io.openenterprise.daisy.Parameter.MVEL_EXPRESSIONS.key] = mvelExpression
     }
-
 }

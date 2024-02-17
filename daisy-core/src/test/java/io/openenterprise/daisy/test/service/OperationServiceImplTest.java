@@ -27,7 +27,7 @@ import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @Import({ApplicationConfiguration.class, TCacheConfiguration.class, OperationServiceImplTest.Configuration.class})
-@TestPropertySource(properties = {"daisy.s3.bucket=daisy", "spring.profiles.active=local_spark,pipeline_example,tCache"})
+@TestPropertySource(properties = {"daisy.aws.s3.bucket=daisy", "spring.profiles.active=local_spark,pipeline_example,tCache"})
 class OperationServiceImplTest extends AbstractTest {
 
     protected static final Map<String, Object> PARAMETERS = Maps.newHashMap(

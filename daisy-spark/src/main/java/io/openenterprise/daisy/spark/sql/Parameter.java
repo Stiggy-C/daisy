@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 public enum Parameter implements io.openenterprise.Parameter {
 
-    CSV_DELIMITER("daisy.spark.dataset.csv.delimiter", Boolean.class),
+    CSV_DELIMITER("daisy.spark.dataset.csv.delimiter", String.class),
 
     CSV_HEADER("daisy.spark.dataset.csv.header", Boolean.class),
 
@@ -61,14 +61,14 @@ public enum Parameter implements io.openenterprise.Parameter {
 
     private final Class<?> valueType;
 
+    Parameter(String key, Class<?> valueType) {
+        this.key = key;
+        this.valueType = valueType;
+    }
+
     @Nonnull
     @SuppressWarnings("unchecked")
     public  <T> Class<T> getValueType() {
         return (Class<T>) valueType;
-    }
-
-    Parameter(String key, Class<?> valueType) {
-        this.key = key;
-        this.valueType = valueType;
     }
 }
