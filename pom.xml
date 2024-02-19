@@ -38,6 +38,7 @@
 		<spring-boot.version>2.7.18</spring-boot.version>
 		<spring-cloud-aws.version>2.4.4</spring-cloud-aws.version>
 		<start-class>io.openenterprise.daisy.DaisyApplication</start-class>
+		<swagger-codegen-maven-plugin.version>3.0.52</swagger-codegen-maven-plugin.version>
 		<testcontainers.version>1.19.3</testcontainers.version>
     </properties>
 
